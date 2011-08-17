@@ -98,7 +98,7 @@
 (define dylan::load load)
 
 (define with-output-to-string
-  (environment-lookup (->environment '(runtime string-output))
+  (environment-lookup (->environment '(runtime string-i/o-port))
 		      'with-output-to-string))
 
 (define (implementation-specific:generate-file in-exprs out-expr)

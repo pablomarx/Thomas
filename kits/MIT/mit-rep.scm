@@ -50,7 +50,9 @@
       (delq! package (package/children parent)))
     (package/add-child! parent 'THOMAS
 			(let ((!THOMAS-REP-MODULE-VARIABLES '()))
-			  (the-environment)))
+			(extend-top-level-environment (nearest-repl/environment)
+			                            '(!THOMAS-REP-MODULE-VARIABLES)
+			                            '(()))))
     unspecific))
 
 (define (thomas-rep)
@@ -86,7 +88,6 @@
 		   (make-repl-state		; state
 		    "?"				;     prompt
 		    (->environment '(Thomas))	;     environment
-		    (repl/syntax-table p)	;     syntax-table
 		    false			;     condition
 		    )
 		   default-repl-operations	; operations
