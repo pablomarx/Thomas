@@ -1,0 +1,1346 @@
+Replied: Thu, 20 Aug 92 17:03:46 -0400
+Replied: "alms@cambridge.apple.com "
+Date: Thu, 20 Aug 1992 16:46:02 -0500
+To: JMiller
+From: alms@cambridge.apple.com
+Subject: Re: Typo in example, page 33
+Cc: RWeiss, Birkholz
+
+> The bind example on the top of the page has misbalanced parens.
+> 
+> I'm retyping all of these !@%#$%$##@$ examples.  Do you have them
+> on-line?
+
+Here you go.  This is hot off the presses, so there are probably
+ommissions and typos.  I'd appreciate it if you point them out to
+me :-)
+
+   -Andrew
+
+
+Page 27
+
+   ? "abc"
+   "abc"
+   ? 123
+   123
+   ? foo:
+   foo:
+   ? #\a
+   #\a
+   ? #t
+   #t
+   ? #f
+   #f
+   ? (quote foo)
+   foo
+   ? 'foo
+   foo
+   ? '(1 2 3)
+   (1 2 3)
+
+
+Page 28-29
+
+   ? <window>
+   {the class <window>}
+   ? concatenate
+   {the generic function concatenate}
+   ? (define my-variable 25)
+   my-variable
+   ? my-variable
+   25
+   ? (bind ((x 50))
+       (+ x x))
+   100
+   ? (setter element)
+   {the generic function (setter element)}
+   ? (define (setter my-variable) 20) 
+   (setter my-variable)
+   ? (setter my-variable)
+   20
+
+Page 29
+
+   ? (+ 3 4)
+   7
+   ? (* my-variable 3)
+   75
+   ? (* (+ 3 4) 5)
+   35
+   ? ((if #t + *) 4 5)
+   9
+
+Page 30
+
+   ; Creates and initializes a module variable
+   (define my-variable 25)
+   ; Sets the value to 12
+   (set! my-variable 12)
+   ; Returns 30. Uses lexical variables x and y.
+   (bind ((x 10) (y 20))
+      (+ x y))
+   ; Creates an anonymous method, which expects 2 
+   ; numeric arguments.
+   (method ((a <number>) (b <number>))
+      (list (- a b) (+ a b)))
+
+Page 30
+
+   ? (values 1 2 3)
+   1
+   2
+   3
+   ? (define-method edges ((center <number>)(radius <number>))
+       (values (- center radius) (+ center radius)))
+   edges
+   ? (edges 100 2)
+   98
+   102
+
+Page 32
+
+   ? foo
+   error: unbound variable foo
+   ? (define foo 10)
+   foo
+   ? foo
+   10
+   ? (+ foo 100)
+   110
+   ? bar
+   error: unbound variable bar
+   ? (define bar foo)
+   bar
+   ? bar
+   10
+   ? (define foo 20)
+   warning: redefining variable foo
+   ? foo
+   20
+   ? bar
+   10
+   ? (+ foo bar)
+   30
+
+Page 33
+
+   ? (bind ((number1 20))
+            (number2 30))
+       (+ number1 number2))
+   50
+
+Page 33
+
+   ? (bind ((x 20)
+            (y (+ x x)))
+       (+ y y))
+   80
+
+Page 33
+
+   ? (define foo 10)
+   foo
+   ? (+ foo foo)
+   20
+   ? (bind ((foo 35))
+       (+ foo foo))
+   70
+   ? (bind ((foo 20))
+       (bind ((foo 50))
+         (+ foo foo)))
+   100
+
+Page 34
+
+   ? (bind (((x <integer>) (sqrt 2)))
+           x)
+   error: 1.4142135623730951 is not an instance of <integer>
+
+
+Page 34
+
+   ? (bind ((foo bar baz (values 1 2 3)))
+       (list foo bar baz))
+   (1 2 3)
+   ? (define-method opposite-edges ((center <number>)
+                                    (radius <number>))
+       (bind ((min max (edges center radius)))
+         (values max min)))
+   opposite-edges
+   ? (opposite-edges 100 2)
+   102
+   98
+
+Page 34
+
+   ? (bind ((x 10)
+            (y 20))
+       (bind ((x y (values y x)))
+         (list x y)))
+   (20 10)
+
+Page 34
+
+   ? (bind ((#rest nums (edges 100 2)))
+       nums)
+   (98 102)
+
+Page 41
+
+   ? (double 10)
+   error: unbound variable double.
+
+Page 41
+
+   ? (define-method double ((thing <number>))
+       (+ thing thing))
+   double
+   ? double
+   {the generic function double}
+   ? (double 10)
+   20
+
+Page 41
+
+   ? (double "the rain in Spain.")
+   error: no method for {the generic function double} was found
+          for the arguments ("the rain in Spain.")
+
+Page 41
+
+   ? (define-method double ((thing <sequence>))
+       (concatenate thing thing))
+   double
+   ? (double "the rain in Spain.")
+   "the rain in Spain.the rain in Spain."
+   ? (double '(a b c))
+   (a b c a b c)
+
+Page 43
+
+   ? (define-method show-rest (a #rest b)
+       (print a)
+       (print b)
+       #t)
+   show-rest
+   ? (show-rest 10 20 30 40)
+   10
+   (20 30 40)
+   #t
+   ? (show-rest 10)
+   10
+   ()
+   #t
+
+Page 44
+
+   (define-method percolate (#key (brand 'maxwell-house)
+                                  (cups 4)
+                                  (strength 'strong))
+     (make-coffee brand cups strength))
+   (define-method layout (widget #key (position: the-pos)
+                                      (size: the-size))
+     (bind ((the-sibling (sibling widget)))
+      (unless (= the-pos (position the-sibling))
+        (align-objects widget the-sibling the-pos the-size))
+
+Page 44
+
+   (percolate brand: 'folgers cups: 10)
+   (percolate strength: 'weak
+              brand: 'tasters-choice
+              cups: 1)
+   (layout my-widget position: (point 10 10)
+                     size: (point 30 50))
+   (layout my-widget size: (query-user-for-size))
+
+Page 45
+
+   ? (define-method show-keys (req1 req2 #key foo)
+       (format #t "requireds: ~a ~a~%" req1 req2)
+       (format #t "key: ~a" foo)
+       #t)
+   show-keys
+   ? (show-keys 'one 'two foo: 'three)
+   requireds: one two
+   key: three
+   #t
+   ? (show-keys foo: 'three)
+   requireds: foo: three
+   key: #f
+   #t
+
+Page 46
+
+   ? (define-method label ((x <object>) #key price)
+      (list price x))
+   label
+   ? (define-method label ((x <sequence>) #key unit-price)
+      (add x (* unit-price (length x))))
+   label
+   ? (define-method label ((x <list>) #rest info #key calories)
+      (add x calories))
+   label
+   ? (label 'grape price: 189 unit-price: 2)
+   error:  illegal keyword argument unit-price:.  Accepted keyword arguments are (price:).
+   ? (label 'grape price: 189)
+   (189 grape)
+   ? (label (vector 3 4 5) price: 189 unit-price: 2)
+   #(6 3 4 5)
+   ? (label (vector 3 4 5) protein: 7 fat: 8 calories: 9)
+   error:  illegal keyword argument protein:.  Accepted keyword arguments are (price: unit-price:).
+   ? (label (list 3 4 5) protein: 7 fat: 8 calories: 9)
+   (9 3 4 5)
+
+Page 46
+
+   ? (define-method test (the-req #rest the-rest
+                                  #key a b)
+       (print the-req)
+       (print the-rest)
+       (print a)
+       (print b))
+   test
+   ? (test 1 a: 2 b: 3 c: 4)
+   1
+   (a: 2 b: 3 c: 4)
+   2
+   3
+
+Page 49
+
+   (define-class <point> (<object>)
+     horizontal
+     vertical)
+
+Page 49
+
+   (horizontal my-point)
+
+Page 49
+
+   ((setter horizontal) my-point 10)
+
+Page 50
+
+   (set! (horizontal my-point) 10)
+
+Page 51   
+   
+   ? (define-class <menu> (<object>)
+       title
+       action)
+
+Page 55
+
+   ? (define-class <rectangle> (<object>)
+        (top type: <integer>
+             init-value: 0
+             init-keyword: top:)
+        (left type: <integer>
+              init-value: 0
+              init-keyword: left:)
+        (bottom type: <integer>
+                init-value: 100
+                init-keyword: bottom:)
+        (right type: <integer>
+               init-value: 100
+               init-keyword: right:))
+   <rectangle>
+   ? <rectangle>
+   {the class <rectangle>}
+   ? (define my-rectangle (make <rectangle> top: 50 left: 50))
+   my-rectangle
+   ? (top my-rectangle)
+   50
+   ? (bottom my-rectangle)
+   100
+   ? (set! (bottom my-rectangle) 55)
+   55
+   ? (bottom my-rectangle)
+   55
+   ? (set! (bottom my-rectangle) 'foo)
+   error: foo is not an instance of <integer> while executing (setter bottom).
+
+
+Page 58
+   
+   (define-class <view> (<object>)
+     (position allocation: instance)
+     ...)
+   
+   (define-class <displaced-view> (<view>)
+     (position allocation: virtual)
+     ...)
+   
+   (define-method position ((v <displaced-view>))
+     (displace-transform (next-method v)))
+   
+   (define-method (setter position) ((v <displaced-view>)
+                                     new-position)
+     (next-method v (undisplace-transform new-position)))
+
+Page 59
+
+   (define-class <shape> (<view>)
+     (image allocation: virtual)
+     (cached-image allocation: instance init-value: #f)
+     ...)
+   
+   (define-method image ((shape <shape>))
+     (or (cached-image shape)
+         (set! (cached-image shape) (compute-image shape))))
+   
+   (define-method (setter image) ((shape <shape>) new-image)
+     (set! (cached-image shape) new-image))
+
+Page 61
+
+   ? (define foo 10)
+   10
+   ? foo             ;this is a variable
+   10                ;this is the variable's contents
+   ? (set! foo (+ 10 10))
+   20
+   ? foo
+   20
+   ? (setter element)                   ;this is a variable
+   {generic function (setter element)}  ;the variable's contents
+   ? (set! (setter element) %set-element)
+   {primitive function %set-element}
+   ? (id? (setter element) %set-element)
+   #t
+
+Page 62
+
+   ? (define foo (vector 'a 'b 'c 'd))
+   foo
+   ? foo
+   #(a b c d)
+   ? (element foo 2)
+   c
+   ? (set! (element foo 2) 'sea)
+   sea
+   ? (element foo 2)
+   sea
+   ? foo
+   #(a b sea d)
+
+Page 64
+
+   ? (define-method test ((thing <object>))
+       (if thing
+           #t
+           #f))
+   test
+   ? (test 'hello)
+   #t
+   ? (test #t)
+   #t
+   ? (test #f)
+   #f
+   
+   ? (define-method double-negative ((num <number>))
+        (if (< num 0)
+            (+ num num)
+            num))
+   double-negative
+   ? (double-negative 11)
+   11
+   ? (double-negative -11)
+   -22
+
+Page 65
+
+   ? (define-method show-and-tell ((thing <object>))
+        (if thing
+            (begin
+               (print thing)
+               #t)
+            #f))
+   show-and-tell
+   ? (show-and-tell "hello")
+   hello
+   #t
+
+Page 65
+
+   (when (bonus-illuminated? pinball post)
+       (add-bonus-score current-player 100000))
+
+Page 65
+
+   (unless (detect-gas? nose)
+       (light match))
+
+Page 66
+   
+   (cond ((< new-position old-position)
+            "the new position is less")
+          ((= new-position old-position)
+           "the positions are equal")
+          (else: "the new position is greater"))
+
+Page 67
+
+   (case (career-choice student)
+      ((art music drama)
+       (print "Don't quit your day job.")
+      ((literature history linguistics)
+       (print "That really is fascinating."))
+      ((science math engineering)
+       (print "Say, can you fix my VCR?"))
+      (else: "I wish you luck."))
+
+Page 67
+
+   (select my-object instance?
+     ((<window> <view> <rectangle>) "it's a graphic object")
+     ((<number> <list> <sequence>) "it's something computational")
+     (else: "Don't know what it is"))
+
+Page 68
+
+   ? (if #t
+         (print "it was true")
+         #t
+         #f)
+   error:  too many arguments to if.
+   ? (if #t
+         (begin (print "it was true")
+                #t)
+         #f)
+   "it was true"
+   #t
+
+Page 69
+
+   (define-method factorial ((n <integer>))
+      (for ((i n (- i 1))   ;variable clause 1
+            (v 1 (* v i)))  ;variable clause 2
+           ((<= i 0) v))    ;end test and result
+
+Page 69
+
+   (define-method first-even ((s <sequence>))
+     (for-each ((number s))
+               ((even? number) number)
+                                ; No body forms needed
+        ))
+
+Page 70
+
+   (define-method schedule-olympic-games ((cities <sequence>)
+                                          (start-year <number>))
+      (for-each ((year (range from: start-year by: 4))
+                 (city cities))
+                ()              ; No end test needed.
+         (schedule-game city year)))
+
+Page 70
+
+   ? (begin
+       (dotimes (i 6) (print "bang!"))
+       (print "click!"))
+   bang!
+   bang!
+   bang!
+   bang!
+   bang!
+   bang!
+   click!
+
+Page 71
+
+   ? (define-method first-even ((seq <sequence>))
+       (bind-exit (exit)
+         (do (method (item)
+                (when (even? item)
+                  (exit item)))
+              seq)))
+   first-even
+   ? (first-even '(1 3 5 4 7 9 10))
+   4
+
+Page 72
+
+   ? +
+   {the generic function +}
+   ? '+
+   +
+   ? (quote +)
+   +
+   ? ''+
+   (quote +)
+   ? (+ 10 10)
+   20
+   ? '(+ 10 10)
+   (+ 10 10)
+   ? (quote (+ 10 10))
+   (+ 10 10)
+
+Page 73
+
+   ? (apply + 1 '(2 3))
+   6
+   ? (+ 1 2 3)
+   6
+   ? (define math-functions (list + * /  ))
+   math-functions
+   ? math-functions
+   ({method +} {method *} {method /} {method  })
+   ? (first math-functions)
+   {method +}
+   ? (apply (first math-functions) 1 2 '(3 4))
+   10
+
+Page 79
+
+   ? (method (num1 num2)
+       (+ num1 num2))
+   {an anonymous method}
+
+Page 80
+
+   ;the second argument to SORT is the test function
+   ? (sort person-list
+           (method (person1 person2)
+             (< (age person1)
+                (age person2))))
+   ? (bind ((double (method (number)
+                      (+ number number))))
+       (double (double 10)))
+   40
+
+Page 80
+
+   ? (define-method double ((my-method <function>))
+       (method (#rest args)
+         (apply my-method args)
+         (apply my-method args)
+         #f))
+   double
+   ? (define print-twice (double print))
+   print-twice
+   ? print-twice
+   {an anonymous method}
+   ? (print-twice "The rain in Spain. . .")
+   The rain in Spain. . .The rain in Spain. . .
+   #f
+   ? (print-twice 55)
+   5555
+   #f
+
+Page 81
+
+   ? (define-method root-mean-square ((s <sequence>))
+        (bind-methods ((average (numbers)
+                         (/ (reduce1 + numbers)
+                            (length numbers)))
+                       (square (n) (* n n)))
+           (sqrt (average (map square s)))))
+   root-mean-square
+   ? (root-mean-square '(5 6 6 7 4))
+   5.692099788303083
+
+Page 81
+
+   ? (define-method newtons-sqrt (x)
+        (bind-methods ((sqrt1 (guess)
+                          (if (close? guess) 
+                              guess 
+                              (sqrt1 (improve guess))))
+                       (close? (guess)
+                          (< (abs (-  (* guess guess) x)) .0001))
+                       (improve (guess)
+                          (/ (+ guess (/ x guess)) 2)))
+               (sqrt1 1)))
+   newtons-sqrt
+   ? (newtons-sqrt 25)
+   5.000000000053723
+
+Page 82
+
+   ? (define-method double ((thing <number>))
+       (+ thing thing))
+   double
+
+Page 82
+
+   ? (double 10)
+   20
+   ? (double 4.5)
+   9.0
+
+Page 82
+
+   ? (define-method double ((thing <integer>))
+       (* thing 2))
+   double
+
+Page 82
+
+   ? (define-method double ((thing (singleton 'cup)))
+       'pint)
+   double
+   ? (double 'cup)
+   pint
+
+Page 83
+
+   ? (define-method double ((num <float>))
+       (print "doubling a floating-point number")
+       (next-method))
+   double
+   ? (double 10.5)
+   doubling a floating-point number
+   21.0
+
+Page 85
+
+   (define-method show ((device <window>) (thing <character>))
+     ...)
+   
+   (define-method show ((device <window>) (thing <string>))
+     ...)
+   
+   (define-method show ((device <window>) (thing <rectangle>))
+     . . .)
+   
+   (define-method show ((device <file>) (thing <character>))
+     . . .)
+   
+   (define-method show ((device <file>) (thing <string>))
+     . . .)
+
+Page 86
+
+   ? (make <generic-function> required: 3)
+   {an anonymous generic function}
+   ? (make <generic-function> required: 3
+                              debug-name: 'foo)
+   {the generic function foo}
+   ? (define expand
+       (make <generic-function> required: 1 debug-name: 'expand))
+   {the generic function expand}
+   ? (expand 55)
+   error: no applicable method for 55 in {the generic function expand}
+
+Page 97
+
+   ? (define-method double ((thing (singleton 'cup)))
+       'pint)
+   {a method on double}
+   ? (double 'cup)
+   pint
+   ? (double 10)
+   20
+
+Page 98
+
+   ? (define-method factorial ((num <integer>))
+       (* num (factorial (- num 1))))
+   factorial
+   ? (define-method factorial ((num (singleton 0)))
+        1)
+   factorial
+   ? (factorial 5)
+   120
+
+Page 100
+
+   ? (do (method (a b) (print (+ a b)))
+         '(100 100 200 200)
+         '(1 2 3 4))
+   101
+   102
+   203
+   204
+   #f
+
+Page 101
+
+   ? (map +
+         '(100 100 200 200)
+         '(1 2 3 4))
+   (101 102 203 204)
+
+Page 101
+
+   ? (map-as <vector> +
+         '(100 100 200 200)
+         '(1 2 3 4))
+   #(101 102 203 204)
+
+Page 101
+
+   ? (define x '(100 100 200 200))
+   x
+   ? (map-into x + '(1 2 3 4))
+   (101 102 203 204)
+   ? x
+   (101 102 203 204)
+
+Page 102
+
+   ? (any? > '(1 2 3 4) '(5 4 3 2))
+   #t
+   ? (any? even? '(1 3 5 7))
+   #f
+
+Page 102
+
+   ? (every? > '(1 2 3 4) '(5 4 3 2))
+   #f
+   ? (every? odd? '(1 3 5 7))
+   #t
+
+Page 102
+
+   ? (define high-score 10)
+   high-score
+   ? (reduce max high-score '(3 1 4 1 5 9))
+   10
+   ? (reduce max high-score '(3 12 9 8 8 6))
+   12
+
+Page 103
+
+   ? (reduce1 + '(1 2 3 4 5))
+   15
+
+Page 103
+
+   ? (define flavors #(chocolate pistachio pumpkin))
+   flavors
+   ? (member? 'chocolate flavors)
+   #t
+   ? (member? 'banana flavors)
+   #f
+
+Page 103
+
+   ? flavors
+   (chocolate pistachio pumpkin)
+   ? (find-key flavors has-nuts?)
+   1
+   ? (element flavors 1)
+   pistachio
+
+Page 104
+
+? (define numbers (list 10 13 16 19))
+numbers
+? (replace-elements! numbers odd? double)
+(10 26 16 38)
+
+Page 104
+
+? (define x (list 'a 'b 'c 'd 'e 'f))
+x
+? (fill! x 3 :start 2)
+(a b 3 3 3 3)
+
+Page 105
+
+   ? (define numbers '(3 4 5))
+   numbers
+   ? (add numbers 1)
+   (1 3 4 5)
+   ? numbers
+   (3 4 5)
+
+Page 105
+
+   ? (define numbers (list 3 4 5))
+   numbers
+   ? (add! numbers 1)
+   (1 3 4 5)
+
+Page 105
+
+   ? (add-new '(3 4 5) 1)
+   (1 3 4 5)
+   ? (add-new '(3 4 5) 4)
+   (3 4 5)
+
+Page 105
+
+   ? (add-new! (list 3 4 5) 1)
+   (1 3 4 5)
+   ? (add-new! (list 3 4 5) 4)
+   (3 4 5)
+
+Page 106
+
+   ? (remove '(3 1 4 1 5 9) 1)
+   (3 4 5 9)
+
+Page 106
+
+   ? (remove! (list 3 1 4 1 5 9) 1)
+   (3 4 5 9)
+
+Page 106
+
+   ? (choose even? '(3 1 4 1 5 9))
+   (4)
+
+Page 106
+
+   ? (choose-by even? (range from: 1)
+                      '(a b c d e f g h i))
+   (b d f h)
+
+Page 107
+
+   ? (intersection '(john paul george ringo)
+                   '(richard george edward charles john))
+   (john george)
+
+Page 107
+
+   ? (union '(butter flour sugar salt eggs)
+            '(eggs butter mushrooms onions salt))
+   (salt butter flour sugar eggs mushrooms onions)
+
+Page 107
+
+   ? (remove-duplicates '(spam eggs spam sausage spam spam spam))
+   (spam eggs sausage)
+
+Page 108
+
+   ? (remove-duplicates! '(spam eggs spam sausage spam spam))
+   (spam eggs sausage)
+   
+Page 108
+   
+   ? (define hamlet '(to be or not to be))
+   hamlet
+   ? (id? hamlet (copy-sequence hamlet))
+   #f
+   ? (copy-sequence hamlet start: 2 end: 4)
+   (or not)
+
+Page 108
+
+   ? (concatenate-as <string> '(#\n #\o #\n) '(#\f #\a #t))
+   "nonfat"
+   ? (concatenate-as <vector> '(0 1 2) '(3 4 5) '(6 7 8))
+   #(0 1 2 3 4 5 6 7 8)
+
+Page 108
+
+   ? (concatenate "low-" "calorie")
+   "low-calorie"
+   ? (concatenate '(0 1 2) '(3 4 5) '(6 7 8))
+   (0 1 2 3 4 5 6 7 8)
+
+Page 109
+
+   ? (define phrase "I hate oatmeal.")
+   phrase
+   ? (replace-subsequence! phrase "like" start: 2)
+   "I like oatmeal."
+
+
+Page 109
+
+   ? (define x '(bim bam boom))
+   x
+   ? (reverse x)
+   (boom bam bim)
+   ? x
+   (bim bam boom)
+
+
+Page 109
+
+   ? (reverse! '(bim bam boom))
+   (boom bam bim)
+
+Page 110
+
+   ? (define numbers '(3 1 4 1 5 9))
+   numbers
+   ? (sort numbers)
+   (1 1 3 4 5 9)
+   ? numbers
+   (3 1 4 1 5 9)
+
+Page 110
+
+   ? (sort! '(3 1 4 1 5 9))
+   (1 1 3 4 5 9)
+
+Page 110
+
+   ? (last '(emperor of china))
+   china
+
+Page 111
+
+   ? (subsequence-position "Ralph Waldo Emerson" "Waldo")
+   6
+
+Page 113
+
+   ? (aref #(7 8 9) 1)
+   8
+
+Page 113
+
+   ? (set! (aref #(7 8 9) 1) 5)
+   #(7 5 9)
+   ? ((setter aref) #(7 8 9) 1 5)
+   #(7 5 9)
+
+Page 113
+
+   ? (dimensions (make <array> dimensions: '(4 4)))
+   (4 4)
+
+Page 115
+
+   ? (cons 1 2)
+   (1 . 2)
+   ? (cons 1 '(2 3 4 5))
+   (1 2 3 4 5)
+
+Page 115
+
+   ? (list 1 2 3)
+   (1 2 3)
+   ? (list (+ 4 3) (- 4 3))
+   (7 1)
+
+Page 115
+
+   ? (list* 1 2 3 '(4 5 6))
+   (1 2 3 4 5 6)
+
+
+Page 116
+
+   ? (car '(4 5 6))
+   4
+   ? (car '())
+   ()
+
+Page 116
+
+   ? (cdr '(4 5 6))
+   (5 6)
+   ? (cdr '())
+   ()
+
+Page 116
+
+   ? (define x '(4 5 6))
+   (4 5 6)
+   ? (set! (car x) 9)
+   9
+
+Page 116
+
+   ? (define x '(4 5 6))
+   (4 5 6)
+   ? (set! (cdr x) '(a b c))
+   (a b c)
+
+Page 120
+
+   ? (define x "Van Gogh")
+   x
+   ? (as-lowercase x)
+   "van gogh"
+ 
+Page 120
+
+   ? (define x "Van Gogh")
+   x
+   ? (as-lowercase! x)
+   "van gogh"
+
+Page 120
+
+   ? (define x "Van Gogh")
+   x
+   ? (as-uppercase x)
+   "VAN GOGH"
+
+Page 120
+
+   ? (define x "Van Gogh")
+   x
+   ? (as-uppercase x)
+   "VAN GOGH"
+
+Page 123
+
+   (define-method do1 (f (c <collection>))
+     (for ((state (initial-state c) (next-state c state)))
+          ((not state) #f)
+       (f (current-element c state))))
+
+Page 125
+
+   (define-method key-sequence ((c <explicit-key-collection>))
+     (for ((state (initial-state c) (next-state c state))
+           (keys  '()               (cons (current-key c state)
+                                          keys)))
+          ((not state) keys)))
+
+Page 125
+
+   (define-method do-with-keys (f (c <explicit-key-collection>))
+     (for ((state (initial-state c) (next-state c state)))
+          ((not state) #f)
+       (f (current-key c state) (current-element c state))))
+
+Page 126
+
+   (define-method do-with-keys (f (c <sequence>))
+     (for ((state (initial-state c) (next-state c state))
+           (key   0                 (+ key 1)))
+          ((not state) #f)
+       (f key (current-element c state))))
+
+Page 126
+
+   (bind ((no-default (cons #f #f)))
+   
+    (define-method .i.element; ((c <explicit-key-collection>) key
+                            #key (default no-default))
+     (for ((state (initial-state c) (next-state c state)))
+          ((or (not state) (= (current-key c state) key))
+           (if state (current-element c state)
+               (if (id? default no-default)
+                   (error ...)
+                   default)))))
+    (define-method .i.element; ((c <sequence>) key
+                            #key (default no-default))
+      (for ((state (initial-state c) (next-state c state))
+            (k     0                 (+ k 1)))
+           ((or (not state) (= k key))
+            (if state (current-element c state)
+                (if (id? default no-default)
+                    (error ...)
+                    default))))) )
+
+Page 128
+
+   (define-method (setter element) ((c <mutable-sequence>)
+                                    (key <integer>) new-value)
+     (for ((state (initial-state c) (next-state c state))
+           (k     0                 (+ k 1)))
+          ((or (not state) (= k key))
+           (if state
+               (set! (current-element c state) new-value)
+               (error ...)))))
+
+Page 128
+
+   (define-method (setter element) ((c <mutable-explicit-key-collection>)
+                                    key new-value)
+     (for ((state (initial-state c) (next-state c state)))
+          ((or (not state) (= (current-key c state) key))
+           (if state
+               (set! (current-element c state) new-value)
+               (error ...)))))
+
+Page 129
+
+   (define-method do2 (f (c1 <collection>) (c2 <collection>))
+     (bind ((keys (intersection (key-sequence c1)
+                                (key-sequence c2))))
+       (for ((ks (initial-state keys) (next-state keys ks)))
+            ((not ks) #f)
+         (bind ((key (current-element keys ks)))
+           (f (element c1 key) (element c2 key))))))
+
+Page 129
+
+   (define-method do2 (f (c1 <sequence>) (c2 <sequence>))
+     (for ((s1 (initial-state c1) (next-state c1 s1))
+           (s2 (initial-state c2) (next-state c2 s2)))
+          ((or (not s1) (not s2)) #f)
+       (f (current-element c1 s1) (current-element c2 s2))))
+
+Page 130
+
+   (define-method map-into1 ((target <mutable-collection>) f
+                             (source <collection>))
+     (bind ((keys (intersection (key-sequence target)
+                                (key-sequence source))))
+       (for ((ks (initial-state keys) (next-state keys ks)))
+            ((not ks) target)
+         (bind ((key (current-element keys ks)))
+           (set! (element target key) (f (element source key)))))))
+   (define-method map-into1 ((target <mutable-sequence>) f
+                             (source <sequence>))
+     (for ((ss (initial-state source) (next-state source ss))
+           (ts (initial-state target) (next-state target ts)))
+          ((or (not ss) (not ts)) target)
+       (set! (current-element target ts)
+             (f (current-element source ss)))))
+
+Page 142
+
+   (handler-case (some-function)
+     ((<type-error>) "there was a type-error")
+     ((<error>) "there was an error")
+     ((<warning>) "there was a warning"))
+
+Page 144-146
+
+   ;;; Classes such as <file-not-found> used in these examples are
+   ;;; invented for the example and are not part of the specification
+   ;;; This example shows minimal handling of a file-not-found error
+   
+   (handler-case (open "file-that-doesnt-exist")
+     ((<file-not-found> condition: c
+       (format *error-output* "~&The file ~A was not found."
+               (file-name c))))
+   
+   
+   ;;; This example shows how to handle a file-not-found error by
+   ;;; reading a different file instead.
+   (handler-bind (<file-not-found>
+                    (method (condition next-handler)
+                      (signal (make <try-a-different-file>
+                                    file-name: "my-emergency-backup-file"))))
+      (open "file-that-doesnt-exist")
+     ....)
+   
+   (define-method open (the-file)
+     (handler-case (guts-of-open the-file)
+       ((<try-a-different-file>
+         description: (method (stream)
+                        (format stream "Read a different file instead of ~A"
+                                        the-file))
+         condition: restart
+        (open (file-name restart)))))))
+   
+   (define-method guts-of-open (the-file)
+     (bind ((result (operating-system-open the-file)))
+       (cond ((instance? result <stream>) result)
+             ((id? result +file-not-found-error-code+)
+              (error (make <file-not-found> file-name: the-file)))
+             ...)))
+   
+   (define-class <file-not-found> (<error>)
+     ((file-name init-keyword: file-name:)))
+   
+   (define-method print ((self <file-not-found>) #key stream verbose)
+     (if verbose
+         (next-method)
+         (format stream "The file ~A was not found" (file-name self))))
+   
+   (define-class <try-a-different-file> (<restart>)
+     ((file-name init-keyword: file-name:)))
+   
+   
+   ;;; This is the same example improved so the restart handler that
+   ;;; reads another file can only be reached by a handler for the
+   ;;; associated condition, useful if there are nested errors.
+   
+   (handler-bind (<file-not-found>)
+                    (method (condition next-handler)
+                      (signal (make <try-a-different-file>
+                                    condition: condition
+                                    file-name: "my-emergency-backup-file")))
+     (open "file-that-doesnt-exist")
+     ....)
+   
+   (define-method open (the-file)
+     ....  (guts-of-open the-file))
+   
+   (define-method guts-of-open (the-file)
+     (bind ((result (operating-system-open the-file)))
+       (cond ((instance? result <stream>) result)
+             ((id? result +file-not-found-error-code+)
+              (bind ((condition (make <file-not-found> file-name: the-file)))
+                (handler-case (error condition)
+                  ((<try-a-different-file>
+                     test: (compose (curry id? condition) restart-condition)
+                    description: (method (stream)
+                                   (format stream
+                                     "Read a different file instead of ~A"
+                                     the-file))
+                    condition: restart
+                   (open (file-name restart)))))))
+             ...)))
+   
+   (define-class <file-not-found> (<error>)
+     ((file-name init-keyword: file-name:)))
+   
+   (define-method print ((self <file-not-found>) #key stream verbose)
+     (if verbose
+        (next-method)
+        (format stream "The file ~A was not found" (file-name self))))
+   
+   (define-class <try-a-different-file> (<restart>)
+     ((condition init-keyword: condition: reader: restart-condition)
+      (file-name init-keyword: file-name:)))
+
+Page 153
+
+   ? (as <symbol> "foo")
+   foo
+   ? (id? 'FOO (as <symbol> "Foo"))
+   #t
+   ? 'Foo
+   foo
+   ? (as <keyword> "foo")
+   foo:
+
+Page 154
+
+   ? (as <string> 'Foo)
+   "foo"
+   ? (as <string> 'bar:)
+   "bar"
+
+Page 157
+
+   ? (define-method sum ((numbers <sequence>))
+         (reduce1 + numbers))
+   sum
+   ? (define-method square ((x <number>)) (* x x))
+   square
+   ? (define-method square-all ((coords <sequence>))        (map square coords)
+   square-all
+   ? (define distance (compose sqrt sum square-all))
+   distance
+   ? (distance '(3 4 5))
+   7.0710678118654755
+
+Page 157
+
+   ? (map female? (list michelle arnold roseanne))
+   (#t #f #t)
+   ? (map (complement female?) (list michelle arnold roseanne))
+   (#f #t #f)
+
+Page 158
+
+   ? (map (curry + 1) '(3 4 5))
+   (4 5 6)
+
+Page 158
+
+   ? (define yuppify (rcurry concatenate ", ayup"))
+   yuppify
+   ? (yuppify "I'm from New Hampsha")
+   "I'm from New Hampsha, ayup"
+
+Page 159
+
+   ? ((always 1) 'x 'y 'z)
+   1
+   ? ((always #t) #f #f)
+   #t
+

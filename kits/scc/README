@@ -1,0 +1,127 @@
+Extensions for 01nov91jfb Scheme->C
+
+This directory contains some extensions for the 01nov91jfb release of Scheme->C
+that are required to run Thomas.  The extensions are:
+
+	weak-cons - a procedure defined as follows:  (weak-cons x y) returns
+	a newly allocated pair that has x as its car and y as its cdr.  If the
+	only reference to the object x is via the car of one or more of these
+	"weak-cons cells", then the system may replace x with #F in all such
+	cells.
+
+	dynamic-wind - a procedure defined as follows:  (dynamic-wind <thunk1>
+	<thunk2> <thunk3>) calls <thunk1>, <thunk2>, and then <thunk3>, where
+	<thunk1>, <thunk2>, and <thunk3> are procedures of no arguments.  The
+	value returned is the value returned by evaluating <thunk2>.  <thunk3>
+        is also called just before <thunk2> calls any continuations created by
+	CALL-WITH-CURRENT-CONTINUATION.  If <thunk2> captures its continuation
+	as an escape procedure, <thunk1> is invoked just before	continuing that
+	continuation (dynwind.sc).
+
+	records, populations, one-d tables, and sort from MIT Scheme - See the
+	MIT documentation (not included) for more details (mit.sc).
+
+	misc. Thomas specific items (thomas.sc).
+
+	improved form of AFTER-COLLECT (aftergc.sc)
+
+
+The system can be built as follows:
+
+A.  You have a DECstation:
+
+	csh> make sci-for-DECstation
+
+B.  You have a DECstation, VAX or SGI system:
+
+    1.  Modify the definitions for SCRTDIR, SCC, and SCCLIB in the makefile.
+
+    2.  csh> make sci
+
+C.  You have some other type of system:
+
+    1.  Add your system dependent changes to callcc.c, heap.c, heap.h and
+	scinit.c.
+
+    2.  Modify the definitions for SCRTDIR, SCC, and SCCLIB in the makefile.
+
+    3.  csh> make sci
+
+Running Thomas:
+
+First, load Thomas into Scheme->C and save a copy of the heap:
+
+	csh> cd src
+	csh> ../sci 
+	Scheme->C -- 01nov91jfb+wcdw -- Copyright 1989 ...
+	> (load "load-thomas.scm")
+		...
+		...
+		...
+	THOMAS-REP
+	"rep.scm"
+	"load-thomas.scm"
+	> (save-heap "thomas.heap")
+	#T
+	> ^D
+
+Then, run sci using the saved heap:
+
+	csh> sci -schf thomas.heap
+	Scheme->C -- 01nov91jfb+wcdw -- Copyright 1989 ...
+	> (thomas-rep)
+
+	Entering Thomas read-eval-print-loop.
+	Exit by typing "thomas:done"
+
+	? (+ 1 3 5 7 9)
+
+	Result: 25
+	?(define-method double ((thing <number>)) (+ thing thing))
+	
+	Result: DOUBLE
+	? (double 2)
+
+	Result: 4
+	? (double "car")
+	***** INDUCE-ERROR generic-dispatch -- no applicable methods...
+	
+	? (define-method double ((thing <string>)) (concatenate thing thing))
+
+	Result: DOUBLE
+	? (double "cat")
+
+	Result: "catcat"
+	(DOUBLE)
+	> ^D
+	csh>
+
+I/O hint:  Many of the data structures inside Thomas are circular.  To prevent
+unexpected long output, the stdout-port and stderr-ports are initialized:
+
+	(set-write-circle! #t)
+	(set-write-length! 20)
+	(set-write-level! 5)
+
+See the sci documentation for more details.
+
+                         Language Extensions
+
+The Scheme->C version of Thomas includes three additional predefined
+methods:
+     (PP <object>) calls the Scheme pretty printer.
+     (SCHEME-VARIABLE <symbol>) returns the value of a Scheme variable
+       that is visible from the normal user interaction environment.
+       This can be used to access any Scheme object, but results are
+       unpredictable unless the object has a type that corresponds to
+       one of the non-procedural Thomas types.  Common types that can
+       be accessed this way are booleans, symbols, strings, numbers,
+       the empty list, as well as vectors or lists composed of these.
+     (SCHEME-PROCEDURE <symbol>) also returns the value of a Scheme
+       variable that is visible from the normal user interaction
+       environment.  It assumes (without checking) that it is
+       applicable and converts it to a Thomas method.  From within
+       Thomas it will appear to take an arbitrary number of arguments,
+       but will issue an error if the number supplied doesn't match
+       the number expected by the Scheme procedure.
+

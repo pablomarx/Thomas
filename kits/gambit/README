@@ -1,0 +1,76 @@
+This is the directory for the Gambit implementation of Thomas, a
+compiler written at Digital Equipment Corporation's Cambridge Research
+Laboratory.  Thomas compiles a language compatible with the language
+described in the book "Dylan(TM) an object-oriented dynamic language"
+by Apple Computer Eastern Research and Technology, April 1992; the
+file DIFFERENCES lists the known differences.
+
+We have made every effort to minimize the differences between Thomas
+and Dylan(TM), and to remove bugs, but help from others would be
+greatly appreciated.  The original development team consisted of:
+
+	  Matt Birkholz (Birkholz@crl.dec.com)
+	  Jim Miller (JMiller@crl.dec.com)
+	  Ron Weiss (RWeiss@crl.dec.com)
+
+In addition, Joel Bartlett (Bartlett@wrl.dec.com), Marc Feeley
+(Feeley@iro.umontreal.ca), Guillermo Rozas (Jinx@zurich.ai.mit.edu)
+and Ralph Swick (Swick@crl.dec.com) contributed time and energy to the
+initial release.
+
+				* * *
+
+			     INSTALLATION
+
+To install this version of Thomas you must already have installed a
+working version of Gambit 1.8 or later.  Gambit can be obtained by FTP
+from trex.iro.umontreal.ca.  If you do not have access to FTP, send
+electronic mail to Feeley@iro.umontreal.ca to discuss other
+arrangements.
+
+There are three ways to use Thomas: as a compiler, as a runtime
+execution environment, or as an interactive environment.  Each is
+described below.
+
+a) Compiler: Load the file "load-compiler".  This provides two
+   main procedures:
+     (THOMAS <file-name> . expressions) compiles the Thomas
+       EXPRESSIONS and puts the resulting Scheme expression into
+       <FILE-NAME>.
+
+     (THOMAS->SCHEME input output) compiles the INPUT file
+       consisting of Thomas expressions, generating a single Scheme
+       expression into the OUTPUT file.
+
+b) Runtime Execution: Load the file "load-runtime".  This
+   provides a Scheme environment into which the output of the
+   Thomas compiler can be loaded for execution.
+
+c) Interactive Environment: Load the file "load-thomas".  This
+   gives you one procedure:
+     (THOMAS-REP . module-variable-name) reads in one Thomas
+   expression, evaluates it, and prints the result.  Assumes that
+   definitions exist for all the MODULE-VARIABLE-NAMES, and returns
+   the list of all known module variable names when exited by
+   evaluating the single expression "thomas:exit".
+                                * * *
+
+                         Language Extensions
+
+The Gambit Scheme version of Thomas includes three additional predefined
+methods:
+     (PP <object>) calls the Scheme pretty printer.
+     (SCHEME-VARIABLE <symbol>) returns the value of a Scheme variable
+       that is visible from the normal user interaction environment.
+       This can be used to access any Scheme object, but results are
+       unpredictable unless the object has a type that corresponds to
+       one of the non-procedural Thomas types.  Common types that can
+       be accessed this way are booleans, symbols, strings, numbers,
+       the empty list, as well as vectors or lists composed of these.
+     (SCHEME-PROCEDURE <symbol>) also returns the value of a Scheme
+       variable that is visible from the normal user interaction
+       environment.  It assumes (without checking) that it is
+       applicable and converts it to a Thomas method.  From within
+       Thomas it will appear to take an arbitrary number of arguments,
+       but will issue an error if the number supplied doesn't match
+       the number expected by the Scheme procedure.

@@ -1,0 +1,7 @@
+#| -*-Scheme-*-
+  Copyright (c) 1992  Digital Equipment Corporation 
+|#
+
+(fluid-let ((sf/default-declarations (cons '(usual-integrations)
+					   sf/default-declarations)))
+  (sf-directory "."))

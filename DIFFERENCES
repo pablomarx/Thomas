@@ -1,0 +1,79 @@
+                       Known Problems in Thomas
+                   (and a comparison to Dylan(TM))
+                   -------------------------------
+
+I. Non-Portable Elements of Thomas
+
+In addition to the file src/implementation-specific.scm, we are aware
+of one assumption we make about the underlying Scheme system which is
+not guaranteed by the IEEE standard.  We assume that any exact
+non-integer is a ratio.  We know of no implementations of Scheme in
+which this is NOT true, but mention it here for completeness.
+
+Some implementations of Scheme do not support the entire numerical
+hierarchy as described in the IEEE standard (it is not required that
+they do so).  If part of the hierarchy is omitted in the
+implementation, this will be visible within the Thomas implementation.
+This most often manifests itself in a lack of complex numbers, large
+rationals, or very large integers.
+
+II. Known differences from the book "Dylan(TM) an object-oriented
+    dynamic language" by Apple Computer Eastern Research and
+    Technology, April 1992.
+
+1) In order to use Scheme's READ to handle Thomas expressions, Thomas
+   uses !key and !rest wherever the Dylan(TM) book uses #key or #rest.
+
+2) Thomas variable names are restricted to the subset of Scheme names
+   that don't start with "!" or "dylan:".  This avoids name clashes
+   between user variable names and compiler-generated variables.
+
+3) Thomas doesn't remember the initial case of symbols, since it
+   inherits the case from the underlying Scheme system.  Thus some
+   implementations of Thomas store symbols in upper case, some in
+   lower case, and some preserve case.  All implementations are
+   otherwise case-insensitive for symbols, keywords and variable
+   names.
+
+4) Thomas doesn't fully handle sealed classes, abstract classes, or
+   read-only module variables.
+
+5) Thomas doesn't support the REMOVE-SLOT operation.  We don't really
+   understand the full intent of this operation in a variety of
+   circumstances.
+
+6) FUNCTION-ARGUMENTS doesn't work on the predefined functions, but it
+   does work on generic functions and methods.  There are only four
+   predefined functions (apply, aref, dimensions, and singelton).
+   There is reason to believe that this is simply a typographical
+   error in the Dylan(TM) book and we may change Thomas in a future
+   release to convert these functions into generic functions.
+
+7) Thomas doesn't do collection alignment for tables (as specified on
+   pages 128 and 129); other collection types should be OK.  Fixing
+   this would be a very nice contribution to the Thomas implementation
+   (hint, hint).
+
+8) Thomas doesn't do (SETTER DIRECT-SUPERCLASSES).  This is somewhere
+   between an oversight (we honestly didn't notice it and it isn't in
+   the index) and a pain to write.  Again, help would be appreciated.
+
+9) Thomas doesn't do virtual slots in a way that supports their use as
+   "filtered slots" as described on pages 58 and 59.  We find the
+   description confusing, and require implementors to allocate a
+   object of the supertype to store the "hidden" slot value rather
+   than relying on NEXT-METHOD to find the hidden slot in the object
+   itself.
+
+III. Additions to the Thomas language
+
+All implementations of Thomas provide four methods not mentioned in
+Dylan(TM):
+
+    (display <object>)    derived from Scheme's DISPLAY
+    (newline)             derived from Scheme'S NEWLINE
+    (write-line <object>) WRITE <object>, the NEWLINE
+    (print <object>)      same as write-line
+
+Some implementations add additional methods or generic functions.
+These are documented in the file kits/<implementation>/README.

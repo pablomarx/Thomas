@@ -1,0 +1,16 @@
+                Sources for the Thomas implementation
+
+All files here are implementation independent (as far as we know)
+EXCEPT for those starting with "scc-", "mit-", or "gambit-".
+
+                            Load-Up Files
+
+These files simply load others.  Each file has a brief comment
+describing the ones it loads.
+
+load-compiler.scm builds a Thomas to Scheme compiler.
+load-runtime.scm builds a Scheme implementation of the Thomas runtime
+  system.
+load-thomas.scm loads both the compiler and the runtime system as well
+  as the file rep.scm which contains an interactive read-eval-print
+  loop for Thomas.
