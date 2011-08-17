@@ -1,1 +1,1 @@
-../../../src/mit-rep.scm
+../mit-rep.scm

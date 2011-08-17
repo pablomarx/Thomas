@@ -16,16 +16,16 @@
 ;* their best efforts to return to Digital any such changes, enhancements or
 ;* extensions that they make and inform Digital of noteworthy uses of this
 ;* software.  Correspondence should be provided to Digital at:
-;* 
+;*
 ;*			Director, Cambridge Research Lab
 ;*			Digital Equipment Corp
 ;*			One Kendall Square, Bldg 700
 ;*			Cambridge MA 02139
-;* 
+;*
 ;* This software may be distributed (but not offered for sale or transferred
 ;* for compensation) to third parties, provided such third parties agree to
-;* abide by the terms and conditions of this notice.  
-;* 
+;* abide by the terms and conditions of this notice.
+;*
 ;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
 ;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
 ;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
@@ -35,14 +35,19 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: rep.scm,v 1.5 1992/09/10 16:15:10 jmiller Exp $
+; $Id: scc-rep.scm,v 1.2 1992/09/18 21:22:34 birkholz Exp $
 
-(define (thomas-rep . mod-vars)
-  ;; mod-vars is an optional list of variable names already assumed to exist.
-  ;; Returns the names of the variables defined in the loop.
+;;; Just use current (user?) environment and keep a list of known module
+;;; variables in thomas-rep-module-variables.
 
+(define thomas-rep-module-variables '())
+
+(define (empty-thomas-environment!)
+  ;; Just dump thomas-rep-module-variables.
+  (set! thomas-rep-module-variables '()))
+
+(define (thomas-rep)
   (define *SAVE-RESET* reset)
-
   (newline)
   (display "Entering Thomas read-eval-print-loop.")
   (newline)
@@ -50,7 +55,7 @@
   (newline)
   (dylan::catch-all-conditions
    (lambda ()
-     (let loop ((module-variables (if (null? mod-vars) '() (car mod-vars))))
+     (let loop ()
        (call-with-current-continuation
 	   (lambda (ret) (set! reset (lambda () (ret #f)))))
        (newline)
@@ -58,9 +63,9 @@
        (let ((input (read)))
 	 (if (and (eq? input 'thomas:done))
 	     (begin (set! reset *save-reset*)
-		     module-variables)		; Returns names defined in loop
+		    'thomas:done)
 	     (compile-expression
-	      input '!MULTIPLE-VALUES module-variables
+	      input '!MULTIPLE-VALUES thomas-rep-module-variables
 	      (lambda (new-vars preamble compiled-output)
 		(implementation-specific:eval
 		 `(BEGIN
@@ -79,4 +84,10 @@
 			  (BEGIN
 			    (DISPLAY "Result: ")
 			    (WRITE !RESULT))))))
-		(loop (append new-vars module-variables))))))))))
+		(set! thomas-rep-module-variables
+		      (append new-vars thomas-rep-module-variables))
+		(loop)))))))))
+
+(display "
+Apply thomas-rep to start a Thomas read-eval-print loop.
+")

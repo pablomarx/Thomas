@@ -35,13 +35,10 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: mit-specific.scm,v 1.26 1992/09/11 21:32:30 jmiller Exp $
+; $Id: mit-specific.scm,v 1.30 1992/09/21 13:07:02 jmiller Exp $
 
 ;;;; This file contains the definitions of all functions used in the
 ;;;; implementation of Dylan which aren't part of R4RS.
-
-;;;; NOTE: If any definitions are added to this file, the file
-;;;; MIT-CREF-SPECIFIC should be editted to match.
 
 ;;;; Populations
 
@@ -73,7 +70,87 @@
   (environment-lookup (->environment '(runtime 1d-property))
 		      '1d-table/put!))
 
-;;;; Stuff for use in exception code (exception.scm)
+;;;; Record package
+
+(define make-record-type
+  (environment-lookup (->environment '(runtime record))
+		      'make-record-type))
+(define record-accessor
+  (environment-lookup (->environment '(runtime record))
+		      'record-accessor))
+(define record-constructor
+  (environment-lookup (->environment '(runtime record))
+		      'record-constructor))
+(define record-predicate
+  (environment-lookup (->environment '(runtime record))
+		      'record-predicate))
+(define record-updater
+  (environment-lookup (->environment '(runtime record))
+		      'record-updater))
+
+;;;; Compiler's error procedure.
+
+(define (dylan::error string . args)
+  (apply error (string-append "Error: " string) args))
+
+;;;; Load-up
+
+(define dylan::load load)
+
+(define with-output-to-string
+  (environment-lookup (->environment '(runtime string-output))
+		      'with-output-to-string))
+
+(define (implementation-specific:generate-file in-exprs out-expr)
+  (define (print x) (newline) (display x))
+  (define (pp-as-code x)
+    (pp x (current-output-port) 'as-code))
+  (define (pp-to-string exprs)
+    (with-output-to-string
+      (lambda ()
+	(for-each (lambda (x) (pp-as-code x))
+		  exprs))))
+  (define (split-char-list chars continue)
+    (let loop ((output '())
+	       (chars chars))
+      (cond ((null? chars)
+	     (continue (list->string (reverse output)) '()))
+	    ((char=? (car chars) #\newline)
+	     (continue (list->string (reverse output)) (cdr chars)))
+	    (else (loop (cons (car chars) output) (cdr chars))))))
+  (define (string->strings string)
+    (let loop ((output '())
+	       (input (string->list string)))
+      (if (null? input)
+	  (reverse output)
+	  (split-char-list input
+	    (lambda (string rest-chars)
+	      (loop (cons string output) rest-chars))))))
+  (print ";;;; Input expressions:")
+  (for-each (lambda (line)
+	      (if (not (zero? (string-length line))) (display "; "))
+	      (display line)
+	      (newline))
+	    (string->strings (pp-to-string in-exprs)))
+  (print ";;;; Compiled output:")
+  (newline)
+  (print "(declare (usual-integrations))")
+  (newline)
+  (pp-as-code out-expr)
+  (newline))
+
+;;;; Eval
+
+(define eval (environment-lookup (->environment '()) 'eval))
+(define nearest-repl/environment
+  (environment-lookup (->environment '(runtime rep))
+		      'nearest-repl/environment))
+
+(define (implementation-specific:eval expression)
+  (eval expression (nearest-repl/environment)))
+
+;;;; Interface between Dylan condition system (runtime-exceptions.scm) and
+;;;; native condition system.
 
 (define access-condition
   (environment-lookup (->environment '(runtime error-handler))
@@ -146,7 +223,7 @@
   (bkpt dylan-condition))
 
 (define (implementation-specific:induce-error format-string format-args)
-  (apply error "Error: " (error-irritant/noise format-string) format-args))
+  (apply error (string-append "Error: " format-string) format-args))
 
 (define (implementation-specific:induce-type-error value class-name)
   (error "Error:" value
@@ -185,34 +262,37 @@
   ;; the Scheme error handler chain
   #F)
 
-;;;; Record package
+;;;; Additional Dylan bindings
 
-(define make-record-type
-  (environment-lookup (->environment '(runtime record))
-		      'make-record-type))
-(define record-accessor
-  (environment-lookup (->environment '(runtime record))
-		      'record-accessor))
-(define record-constructor
-  (environment-lookup (->environment '(runtime record))
-		      'record-constructor))
-(define record-predicate
-  (environment-lookup (->environment '(runtime record))
-		      'record-predicate))
-(define record-updater
-  (environment-lookup (->environment '(runtime record))
-		      'record-updater))
+(define dylan:scheme-variable-ref
+  (let ((env (nearest-repl/environment)))
+    (lambda (mv nm variable-name)
+      mv nm				; Ignored
+      (environment-lookup env variable-name))))
+
+(define dylan:scheme-procedure-ref
+  (let ((env (nearest-repl/environment)))
+    (lambda (mv nm variable-name)
+      mv nm				; Ignored
+      (make-dylan-callable
+       (environment-lookup env variable-name)))))
+
+(define (dylan:pp mv nm obj)
+  mv nm					; Ignored
+  (pp obj))
+
+(define implementation-specific:additional-dylan-bindings
+  `((pp dylan:pp)
+    (scheme-variable dylan:scheme-variable-ref)
+    (scheme-procedure dylan:scheme-procedure-ref)))
 
 ;;;; Other things
 
-(define string-downcase
-  (environment-lookup (->environment '()) 'string-downcase))
-
 ;;; For conversion from strings to symbols, we need a function that
 ;;; canonicalizes the case of the string.
-(define-integrable canonicalize-string-for-symbol string-downcase)
-;(define (canonicalize-string-for-symbol string)
-;  (list->string (map char-downcase (string->list string))))
+
+(define canonicalize-string-for-symbol
+  (environment-lookup (->environment '()) 'string-downcase))
 
 (define sort
   (environment-lookup (->environment '())
@@ -260,82 +340,3 @@
 (define rationalize
   (environment-lookup (->environment '(runtime number))
 		      'rationalize))
-
-;;;; Called at compile-time only
-
-(define (dylan::error string . args)
-  (apply error "Error: " (error-irritant/noise string) args))
-
-;;;; Load-up
-
-(define dylan::load load)
-
-(define implementation-specific:file-name "~/z1.dyl")
-
-(define with-output-to-string
-  (environment-lookup (->environment '(runtime string-output))
-		      'with-output-to-string))
-
-(define (implementation-specific:generate-file in-exprs out-expr)
-  (define (print x) (newline) (display x))
-  (define (pp-as-code x)
-    (pp x (current-output-port) 'as-code))
-  (define (pp-to-string exprs)
-    (with-output-to-string
-      (lambda ()
-	(for-each (lambda (x) (pp-as-code x))
-		  exprs))))
-  (define (split-char-list chars continue)
-    (let loop ((output '())
-	       (chars chars))
-      (cond ((null? chars)
-	     (continue (list->string (reverse output)) '()))
-	    ((char=? (car chars) #\newline)
-	     (continue (list->string (reverse output)) (cdr chars)))
-	    (else (loop (cons (car chars) output) (cdr chars))))))
-  (define (string->strings string)
-    (let loop ((output '())
-	       (input (string->list string)))
-      (if (null? input)
-	  (reverse output)
-	  (split-char-list input
-	    (lambda (string rest-chars)
-	      (loop (cons string output) rest-chars))))))
-  (print ";;;; Input expressions:")
-  (for-each (lambda (line)
-	      (if (not (zero? (string-length line))) (display "; "))
-	      (display line)
-	      (newline))
-	    (string->strings (pp-to-string in-exprs)))
-  (print ";;;; Compiled output:")
-  (print "")
-  (print "(declare (usual-integrations))")
-  (print "")
-  (pp-as-code out-expr)
-  (newline))
-
-;;;; Eval
-
-(define eval (environment-lookup (->environment '()) 'eval))
-(define nearest-repl/environment
-  (environment-lookup (->environment '(runtime rep))
-		      'nearest-repl/environment))
-
-(define (implementation-specific:eval expression)
-  (eval expression (nearest-repl/environment)))
-
-;;;; Additional Dylan bindings
-
-(define (dylan:scheme-variable-ref mv nm variable-name)
-  mv nm					; Ignored
-  (environment-lookup (nearest-repl/environment) variable-name))
-
-(define (dylan:scheme-procedure-ref mv nm variable-name)
-  mv nm					; Ignored
-  (make-dylan-callable
-   (environment-lookup (nearest-repl/environment) variable-name)))
-
-(define implementation-specific:additional-dylan-bindings
-  `((pp (make-dylan-callable pp 1))
-    (scheme-variable dylan:scheme-variable-ref)
-    (scheme-procedure dylan:scheme-procedure-ref)))

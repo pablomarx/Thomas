@@ -1,1 +1,1 @@
-scc-rep.scm
+../scc-rep.scm

@@ -1,0 +1,34 @@
+-*-Indented-Text-*-
+
+Thomas version 1.1 contains the following changes from version 1.0:
+
+* runtime-collections-generic.scm was too large to be compiled by Gambit.
+We've split it into runtime-collections-generic1.scm and
+runtime-collections-generic2.scm.
+
+* sorted-applicable-methods now uses a new topological sort that uses a
+number we call "class specificity".  Intuitively, class specificity
+increases every time a class is specialized to produce a subclass.
+Computationally, class specificity is the largest number of subclass links
+between <object> and the class.  For example, consider this class
+heterarchy:
+
+			<object>		specificity = 0
+			/  |  \
+		      <a> <b> <c>		specificity = 1
+		        \ /   /
+		        <d>  /			specificity = 2
+			  \ /
+			  <e>			specificity = 3
+
+Thus, during method dispatch on an object of type <d>, Thomas considers
+methods specialized by class <d> to be more specific than those specialized
+by <a> or <b>, which are in turn more specific than any specialized by
+<object>.  Notice that the ordering of methods specialized by <a> and <b>
+is not specified.  Methods specialized on <e> or <c> are not applicable
+because <d> is not a subclass of either.
+
+* portable-rep.scm and scc-rep.scm now also support the
+`empty-thomas-environment!' operation.
+
+$Id: RELEASE,v 1.3 1992/09/25 16:37:00 birkholz Exp $

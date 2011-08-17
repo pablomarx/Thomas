@@ -1,6 +1,7 @@
 ; -*-Scheme-*-
 ; 
-; $Header: /scheme/users/cph/src/runtime/RCS/record.scm,v 1.12 1991/11/26 06:50:09 cph Exp $
+; $Id: record.scm,v 1.3 1992/09/23 15:30:30 birkholz Exp $
+; $MIT-Header: /scheme/users/cph/src/runtime/RCS/record.scm,v 1.12 1991/11/26 06:50:09 cph Exp $
 ; 
 ; Copyright (c) 1989-91 Massachusetts Institute of Technology
 ; 
@@ -32,30 +33,16 @@
 ; promotional, or sales literature without prior written consent from
 ; MIT in each case.
 
+; This file requires the following non-IEEE primitives:
+
+; error:wrong-type-argument and error:bad-range-argument each signal Scheme
+; conditions indicating an argument of the wrong type or invalid value
+; (respectively).
+
 ;;;; Records
 
 ;;; adapted from JAR's implementation
 ;;; conforms to R4RS proposal
-
-;;; Define the following procedures to match the Scheme implementation.
-
-(define (error:wrong-type-argument record-type expected-type procedure)
-  (error 'record-package "~s ~s~%"
-	 (string-append
-	  (symbol->string procedure)
-	  ": wrong argument type.  Expected "
-	  expected-type
-	  ", got ")
-	 record-type))
-
-(define (error:bad-range-argument field-name procedure-name)
-    (error 'record-package "~s ~s~%"
-	   (string-append (symbol->string procedure-name)
-	       ": unknown field name")
-	   field-name))
-
-
-
 
 (define record-type-marker
   (string->symbol "#[(runtime record)record-type-marker]"))

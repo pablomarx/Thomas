@@ -1,0 +1,10 @@
+#/bin/csh
+# $Id: gambit_compile,v 1.1 1992/09/23 17:24:00 birkholz Exp $
+
+foreach p (*.scm)
+  mv $p temp
+  echo "(##declare (standard-bindings))" > $p
+  cat temp >> $p
+  gsc $p -- -h10000
+  mv temp $p
+end

@@ -1,6 +1,7 @@
 ; -*-Scheme-*-
 ; 
-; $Header: msort.scm,v 14.1 88/06/13 11:47:52 GMT cph Rel $
+; $Id: msort.scm,v 1.2 1992/09/22 20:31:33 birkholz Exp $
+; $MIT-Header: msort.scm,v 14.1 88/06/13 11:47:52 GMT cph Rel $
 ; 
 ; Copyright (c) 1988 Massachusetts Institute of Technology
 ; 

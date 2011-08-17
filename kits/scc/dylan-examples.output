@@ -1,0 +1,1041 @@
+;;;; -*- Scheme -*- isn't Thomas (or Dylan(TM))
+;*              Copyright 1992 Digital Equipment Corporation
+;*                         All Rights Reserved
+;*
+;* Permission to use, copy, and modify this software and its documentation is
+;* hereby granted only under the following terms and conditions.  Both the
+;* above copyright notice and this permission notice must appear in all copies
+;* of the software, derivative works or modified versions, and any portions
+;* thereof, and both notices must appear in supporting documentation.
+;*
+;* Users of this software agree to the terms and conditions set forth herein,
+;* and hereby grant back to Digital a non-exclusive, unrestricted, royalty-free
+;* right and license under any changes, enhancements or extensions made to the
+;* core functions of the software, including but not limited to those affording
+;* compatibility with other hardware or software environments, but excluding
+;* applications which incorporate this software.  Users further agree to use
+;* their best efforts to return to Digital any such changes, enhancements or
+;* extensions that they make and inform Digital of noteworthy uses of this
+;* software.  Correspondence should be provided to Digital at:
+;*
+;*                      Director, Cambridge Research Lab
+;*                      Digital Equipment Corp
+;*                      One Kendall Square, Bldg 700
+;*                      Cambridge MA 02139
+;*
+;* This software may be distributed (but not offered for sale or transferred
+;* for compensation) to third parties, provided such third parties agree to
+;* abide by the terms and conditions of this notice.
+;*
+;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
+;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
+;* CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+;* DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+;* PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+;* SOFTWARE.
+
+; $Id: scc_dylan-examples.output,v 1.2 1992/09/24 19:42:32 birkholz Exp $
+
+;;; This is the output expected from the Scheme->C implementation of Thomas.
+;;; Notice that this output may not be exact, depending on whether the
+;;; system was compiled or is running interpreted, and perhaps other factors.
+
+> (load "../../../full-test.scm")
+DISPLAY-SIMPLE-CONDITION
+DISPLAY-CONDITION
+MAKE-EXPRESSION
+TEST
+TEST-DYLAN-EXAMPLES
+"full-test.scm"
+> (test "../../../dylan-examples.dyl")
+"abc"
+;Value: "abc"
+123
+;Value: 123
+FOO:
+;Value: FOO:
+#\a
+;Value: #\a
+#T
+;Value: #T
+#F
+;Value: #F
+'FOO
+;Value: FOO
+'FOO
+;Value: FOO
+'(1 2 3)
+;Value: (1 2 3)
+(DEFINE-CLASS <WINDOW> (<OBJECT>))
+;Value: <WINDOW>
+<WINDOW>
+;Value: #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <WINDOW> ((POPULATION)) ((POPULATION)) (#(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <OBJECT> ((POPULATION)) ((POPULATION) ... #(# <CHARACTER> # # # # # 0 #F #F #F 1 #) #(# <KEYWORD> # # # # # 0 #F #F #F 1 #) #(# <SYMBOL> # # # # # 0 #F #F #F 1 #) #(# <SINGLETON> # # # # # 0 #F #F #F 1 #) #(# <SLOT-DESCRIPTOR> # # # # # 0 #F #F #F 1 #) #(# <CLASS> # # # # # 0 #F #F #F 1 #) #(# <FUNCTION> # # # # # 0 #F #F #F 1 #) #(# <CONDITION> # # # # # 0 #F #F #F 1 #) #(# <COLLECTION> # # # # # 0 #F #F #F 1 #) #(# <NUMBER> # # # # # 0 #F #F #F 1 #)) () #() #() 0 #F #F #F 0 (SPECIFICITY . TOKEN))) #() #() 0 #F #F #F 1 (SPECIFICITY . TOKEN))
+CONCATENATE
+;Value: #*PROCEDURE*
+(DEFINE MY-VARIABLE 25)
+;Value: MY-VARIABLE
+MY-VARIABLE
+;Value: 25
+(BIND ((X 50)) (+ X X))
+;Value: 100
+(SETTER ELEMENT)
+;Value: #*PROCEDURE*
+(DEFINE (SETTER MY-VARIABLE) 20)
+;Value: (SETTER MY-VARIABLE)
+(SETTER MY-VARIABLE)
+;Value: 20
+(+ 3 4)
+;Value: 7
+(* MY-VARIABLE 3)
+;Value: 75
+(* (+ 3 4) 5)
+;Value: 35
+((IF #T + *) 4 5)
+;Value: 9
+(DEFINE MY-VARIABLE 25)
+;Value: MY-VARIABLE
+(SET! MY-VARIABLE 12)
+;Value: 12
+(BIND ((X 10) (Y 20)) (+ X Y))
+;Value: 30
+(METHOD ((A <NUMBER>) (B <NUMBER>)) (LIST (- A B) (+ A B)))
+;Value: #*PROCEDURE*
+(VALUES 1 2 3)
+;Value[1]: 1
+;Value[2]: 2
+;Value[3]: 3
+(DEFINE-METHOD
+  EDGES
+  ((CENTER <NUMBER>) (RADIUS <NUMBER>))
+  (VALUES (- CENTER RADIUS) (+ CENTER RADIUS)))
+;Value: EDGES
+(EDGES 100 2)
+;Value[1]: 98
+;Value[2]: 102
+FOO
+;Error: unbound variable FOO
+(DEFINE FOO 10)***** FOO is redefined
+***** DYLAN:MODULE-GET/FOO/ is redefined
+***** DYLAN:MODULE-SET/FOO/! is redefined
+
+;Value: FOO
+FOO
+;Value: 10
+(+ FOO 100)
+;Value: 110
+BAR
+;Error: unbound variable BAR
+(DEFINE BAR FOO)***** BAR is redefined
+***** DYLAN:MODULE-GET/BAR/ is redefined
+***** DYLAN:MODULE-SET/BAR/! is redefined
+
+;Value: BAR
+BAR
+;Value: 10
+(DEFINE FOO 20)
+;Value: FOO
+FOO
+;Value: 20
+BAR
+;Value: 10
+(+ FOO BAR)
+;Value: 30
+(BIND ((NUMBER1 20) (NUMBER2 30)) (+ NUMBER1 NUMBER2))
+;Value: 50
+(BIND ((X 20) (Y (+ X X))) (+ Y Y))
+;Value: 80
+(DEFINE FOO 10)
+;Value: FOO
+(+ FOO FOO)
+;Value: 20
+(BIND ((FOO 35)) (+ FOO FOO))
+;Value: 70
+(BIND ((FOO 20)) (BIND ((FOO 50)) (+ FOO FOO)))
+;Value: 100
+(BIND (((X <INTEGER>) (SQRT 2))) X)
+;Error: 1.414213562373095 is not an instance of <INTEGER>
+(BIND ((FOO BAR BAZ (VALUES 1 2 3))) (LIST FOO BAR BAZ))
+;Value: (1 2 3)
+(DEFINE-METHOD
+  OPPOSITE-EDGES
+  ((CENTER <NUMBER>) (RADIUS <NUMBER>))
+  (BIND ((MIN MAX (EDGES CENTER RADIUS))) (VALUES MAX MIN)))
+;Value: OPPOSITE-EDGES
+(OPPOSITE-EDGES 100 2)
+;Value[1]: 102
+;Value[2]: 98
+(BIND ((X 10) (Y 20)) (BIND ((X Y (VALUES Y X))) (LIST X Y)))
+;Value: (20 10)
+(BIND ((!REST NUMS (EDGES 100 2))) NUMS)
+;Value: (98 102)
+(DOUBLE 10)
+;Error: unbound variable DOUBLE
+(DEFINE-METHOD DOUBLE ((THING <NUMBER>)) (+ THING THING))***** DOUBLE is redefined
+***** DYLAN:MODULE-GET/DOUBLE/ is redefined
+***** DYLAN:MODULE-SET/DOUBLE/! is redefined
+
+;Value: DOUBLE
+(DOUBLE 10)
+;Value: 20
+(DOUBLE "the rain in Spain.")
+;Error: generic-dispatch -- no applicable methods #*PROCEDURE* ("the rain in Spain.")
+(DEFINE-METHOD DOUBLE ((THING <SEQUENCE>)) (CONCATENATE THING THING))
+;Value: DOUBLE
+(DOUBLE "the rain in Spain.")
+;Value: "the rain in Spain.the rain in Spain."
+(DOUBLE '(A B C))
+;Value: (A B C A B C)
+(DEFINE-METHOD SHOW-REST (A !REST B) (PRINT A) (PRINT B) #T)
+;Value: SHOW-REST
+(SHOW-REST 10 20 30 40)10
+(20 30 40)
+
+;Value: #T
+(SHOW-REST 10)10
+()
+
+;Value: #T
+(DEFINE-METHOD MAKE-COFFEE (!REST X) X)
+;Value: MAKE-COFFEE
+(DEFINE-METHOD
+  PERCOLATE
+  (!KEY (BRAND 'MAXWELL-HOUSE) (CUPS 4) (STRENGTH 'STRONG))
+  (MAKE-COFFEE BRAND CUPS STRENGTH))
+;Value: PERCOLATE
+(DEFINE-METHOD POSITION ((X <LIST>)) (CAR X))
+;Value: POSITION
+(ADD-METHOD POSITION (METHOD ((X <NUMBER>)) X))
+;Value[1]: #*PROCEDURE*
+;Value[2]: #F
+(DEFINE-METHOD SIBLING ((X <NUMBER>)) (+ X 5))
+;Value: SIBLING
+(DEFINE-METHOD ALIGN-OBJECTS (A B C D) (LIST A B C D))
+;Value: ALIGN-OBJECTS
+(DEFINE-METHOD
+  LAYOUT
+  (WIDGET !KEY (POSITION: THE-POS) (SIZE: THE-SIZE))
+  (BIND
+    ((THE-SIBLING (SIBLING WIDGET)))
+    (UNLESS
+      (= THE-POS (POSITION THE-SIBLING))
+      (ALIGN-OBJECTS WIDGET THE-SIBLING THE-POS THE-SIZE))))
+;Value: LAYOUT
+(PERCOLATE BRAND: 'FOLGERS CUPS: 10)
+;Value: (FOLGERS 10 STRONG)
+(PERCOLATE STRENGTH: 'WEAK BRAND: 'TASTERS-CHOICE CUPS: 1)
+;Value: (TASTERS-CHOICE 1 WEAK)
+(DEFINE MY-WIDGET 3)
+;Value: MY-WIDGET
+(DEFINE-METHOD POINT ((X <NUMBER>) (Y <NUMBER>)) (LIST X Y))
+;Value: POINT
+(DEFINE-METHOD QUERY-USER-FOR-SIZE () 3)
+;Value: QUERY-USER-FOR-SIZE
+(LAYOUT MY-WIDGET POSITION: (POINT 10 10) SIZE: (POINT 30 50))
+;Value: (3 8 (10 10) (30 50))
+(LAYOUT MY-WIDGET SIZE: (QUERY-USER-FOR-SIZE))
+;Value: (3 8 #F 3)
+(DEFINE-METHOD
+  SHOW-KEYS
+  (REQ1 REQ2 !KEY FOO)
+  (PRINT (LIST "requireds: " REQ1 REQ2))
+  (PRINT (LIST "key: " FOO))
+  #T)
+;Value: SHOW-KEYS
+(SHOW-KEYS 'ONE 'TWO FOO: 'THREE)("requireds: " ONE TWO)
+("key: " THREE)
+
+;Value: #T
+(SHOW-KEYS FOO: 'THREE)("requireds: " FOO: THREE)
+("key: " #F)
+
+;Value: #T
+(DEFINE-METHOD LABEL ((X <OBJECT>) !KEY PRICE) (LIST PRICE X))
+;Value: LABEL
+(DEFINE-METHOD
+  LABEL
+  ((X <SEQUENCE>) !KEY UNIT-PRICE)
+  (ADD X (* UNIT-PRICE (SIZE X))))
+;Value: LABEL
+(DEFINE-METHOD LABEL ((X <LIST>) !REST INFO !KEY CALORIES) (ADD X CALORIES))
+;Value: LABEL
+(LABEL 'GRAPE PRICE: 189 UNIT-PRICE: 2)
+;Error: illegal keyword argument UNIT-PRICE: (PRICE:)
+(LABEL 'GRAPE PRICE: 189)
+;Value: (189 GRAPE)
+(LABEL (VECTOR 3 4 5) PRICE: 189 UNIT-PRICE: 2)
+;Value: #(6 3 4 5)
+(LABEL (VECTOR 3 4 5) PROTEIN: 7 FAT: 8 CALORIES: 9)
+;Error: illegal keyword argument PROTEIN: (PRICE: UNIT-PRICE:)
+(LABEL (LIST 3 4 5) PROTEIN: 7 FAT: 8 CALORIES: 9)
+;Value: (9 3 4 5)
+(DEFINE-METHOD
+  TEST
+  (THE-REQ !REST THE-REST !KEY A B)
+  (PRINT THE-REQ)
+  (PRINT THE-REST)
+  (PRINT A)
+  (PRINT B))***** TEST is redefined
+
+;Value: TEST
+(TEST 1 A: 2 B: 3 C: 4)1
+(A: 2 B: 3 C: 4)
+2
+3
+
+;Value: #F
+(DEFINE-CLASS <POINT> (<OBJECT>) HORIZONTAL VERTICAL)
+;Value: <POINT>
+(DEFINE MY-POINT (MAKE <POINT>))
+;Value: MY-POINT
+(HORIZONTAL MY-POINT)
+;Error: uninitialized slot accessed #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-INSTANCE (CLASS SINGLETON DATA)) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <POINT> ((POPULATION) ...) ((POPULATION)) (#(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS #) <OBJECT> (#) (# # # # # # # # # # # # #) () #() #() 0 #F #F #F 0 (SPECIFICITY . TOKEN))) #(#(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT #) VERTICAL #*PROCEDURE* #*PROCEDURE* #(# <OBJECT> # # () # # 0 #F #F #F 0 #) #F #F #F #F #F INSTANCE #F 0) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT #) HORIZONTAL #*PROCEDURE* #*PROCEDURE* #(# <OBJECT> # # () # # 0 #F #F #F 0 #) #F #F #F #F #F INSTANCE #F 1)) #() 2 #F #F #F 1 (SPECIFICITY . TOKEN)) #F #((<<UNINITIALIZED>>) (<<UNINITIALIZED>>))) HORIZONTAL
+(DEFINE MY-POINT (MAKE <POINT>))
+;Value: MY-POINT
+((SETTER HORIZONTAL) MY-POINT 10)
+;Value: 10
+(HORIZONTAL MY-POINT)
+;Value: 10
+(DEFINE MY-POINT (MAKE <POINT>))
+;Value: MY-POINT
+(SET! (HORIZONTAL MY-POINT) 10)
+;Value: 10
+(HORIZONTAL MY-POINT)
+;Value: 10
+(DEFINE-CLASS
+  <RECTANGLE>
+  (<OBJECT>)
+  (TOP TYPE: <INTEGER> INIT-VALUE: 0 INIT-KEYWORD: TOP:)
+  (LEFT TYPE: <INTEGER> INIT-VALUE: 0 INIT-KEYWORD: LEFT:)
+  (BOTTOM TYPE: <INTEGER> INIT-VALUE: 100 INIT-KEYWORD: BOTTOM:)
+  (RIGHT TYPE: <INTEGER> INIT-VALUE: 100 INIT-KEYWORD: RIGHT:))
+;Value: <RECTANGLE>
+<RECTANGLE>
+;Value: #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <RECTANGLE> ((POPULATION)) ((POPULATION)) (#(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <OBJECT> ((POPULATION)) ((POPULATION) ... #(# <POINT> # # # # # 2 #F #F #F 1 #) #(# <WINDOW> # # # # # 0 #F #F #F 1 #) #(# <CHARACTER> # # # # # 0 #F #F #F 1 #) #(# <KEYWORD> # # # # # 0 #F #F #F 1 #) #(# <SYMBOL> # # # # # 0 #F #F #F 1 #) #(# <SINGLETON> # # # # # 0 #F #F #F 1 #) #(# <SLOT-DESCRIPTOR> # # # # # 0 #F #F #F 1 #) #(# <CLASS> # # # # # 0 #F #F #F 1 #) #(# <FUNCTION> # # # # # 0 #F #F #F 1 #) #(# <CONDITION> # # # # # 0 #F #F #F 1 #) #(# <COLLECTION> # # # # # 0 #F #F #F 1 #) #(# <NUMBER> # # # # # 0 #F #F #F 1 #)) () #() #() 0 #F #F #F 0 (SPECIFICITY . TOKEN))) #(#(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT (DEBUG-NAME GETTER SETTER TYPE INIT-VALUE HAS-INIT-VALUE? INIT-FUNCTION INIT-KEYWORD REQUIRED-INIT-KEYWORD ALLOCATION INHERITED? DATA-LOCATION)) RIGHT #*PROCEDURE* #*PROCEDURE* #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS #) <INTEGER> (#) (#) (#) #() #() 0 #F #F #F 5 (SPECIFICITY . TOKEN)) 100 #T #F RIGHT: #F INSTANCE #F 0) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT (DEBUG-NAME GETTER SETTER TYPE INIT-VALUE HAS-INIT-VALUE? INIT-FUNCTION INIT-KEYWORD REQUIRED-INIT-KEYWORD ALLOCATION INHERITED? DATA-LOCATION)) BOTTOM #*PROCEDURE* #*PROCEDURE* #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS #) <INTEGER> (#) (#) (#) #() #() 0 #F #F #F 5 (SPECIFICITY . TOKEN)) 100 #T #F BOTTOM: #F INSTANCE #F 1) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT (DEBUG-NAME GETTER SETTER TYPE INIT-VALUE HAS-INIT-VALUE? INIT-FUNCTION INIT-KEYWORD REQUIRED-INIT-KEYWORD ALLOCATION INHERITED? DATA-LOCATION)) LEFT #*PROCEDURE* #*PROCEDURE* #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS #) <INTEGER> (#) (#) (#) #() #() 0 #F #F #F 5 (SPECIFICITY . TOKEN)) 0 #T #F LEFT: #F INSTANCE #F 2) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-SLOT (DEBUG-NAME GETTER SETTER TYPE INIT-VALUE HAS-INIT-VALUE? INIT-FUNCTION INIT-KEYWORD REQUIRED-INIT-KEYWORD ALLOCATION INHERITED? DATA-LOCATION)) TOP #*PROCEDURE* #*PROCEDURE* #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS #) <INTEGER> (#) (#) (#) #() #() 0 #F #F #F 5 (SPECIFICITY . TOKEN)) 0 #T #F TOP: #F INSTANCE #F 3)) #() 4 #F #F #F 1 (SPECIFICITY . TOKEN))
+(DEFINE MY-RECTANGLE (MAKE <RECTANGLE> TOP: 50 LEFT: 50))
+;Value: MY-RECTANGLE
+(TOP MY-RECTANGLE)
+;Value: 50
+(BOTTOM MY-RECTANGLE)
+;Value: 100
+(SET! (BOTTOM MY-RECTANGLE) 55)
+;Value: 55
+(BOTTOM MY-RECTANGLE)
+;Value: 55
+(SET! (BOTTOM MY-RECTANGLE) 'FOO)
+;Error: FOO is not an instance of <INTEGER>
+(DEFINE-CLASS <VIEW> (<OBJECT>) (POSITION ALLOCATION: INSTANCE))
+;Value: <VIEW>
+(DEFINE-CLASS <DISPLACED-VIEW> (<VIEW>) (POSITION ALLOCATION: VIRTUAL))
+;Value: <DISPLACED-VIEW>
+(DEFINE-METHOD
+  POSITION
+  ((V <DISPLACED-VIEW>))
+  (DISPLACE-TRANSFORM (NEXT-METHOD V)))
+;Value: POSITION
+(DEFINE-METHOD
+  (SETTER POSITION)
+  ((V <DISPLACED-VIEW>) NEW-POSITION)
+  (NEXT-METHOD V (UNDISPLACE-TRANSFORM NEW-POSITION)))
+;Value: (SETTER POSITION)
+(DEFINE-METHOD
+  DISPLACE-TRANSFORM
+  (POSITION)
+  (LIST 'DISPLACE-TRANSFORM POSITION))
+;Value: DISPLACE-TRANSFORM
+(DEFINE-METHOD
+  UNDISPLACE-TRANSFORM
+  (POSITION)
+  (LIST 'UNDISPLACE-TRANSFORM POSITION))
+;Value: UNDISPLACE-TRANSFORM
+(DEFINE
+  MY-DISPLACED-VIEW
+  (MAKE <DISPLACED-VIEW> POSITION: 'INITIAL-POSITION))
+;Value: MY-DISPLACED-VIEW
+(POSITION MY-DISPLACED-VIEW)
+;Value: (DISPLACE-TRANSFORM ())
+(SET! (POSITION MY-DISPLACED-VIEW) 'NEXT-POSITION)
+;Value: NEXT-POSITION
+(POSITION MY-DISPLACED-VIEW)
+;Value: (DISPLACE-TRANSFORM (UNDISPLACE-TRANSFORM NEXT-POSITION))
+(DEFINE-CLASS
+  <SHAPE>
+  (<VIEW>)
+  (IMAGE ALLOCATION: VIRTUAL)
+  (CACHED-IMAGE ALLOCATION: INSTANCE INIT-VALUE: #F))
+;Value: <SHAPE>
+(DEFINE-METHOD
+  IMAGE
+  ((SHAPE <SHAPE>))
+  (OR (CACHED-IMAGE SHAPE) (SET! (CACHED-IMAGE SHAPE) (COMPUTE-IMAGE SHAPE))))
+;Value: IMAGE
+(DEFINE-METHOD
+  (SETTER IMAGE)
+  ((SHAPE <SHAPE>) NEW-IMAGE)
+  (SET! (CACHED-IMAGE SHAPE) NEW-IMAGE))
+;Value: (SETTER IMAGE)
+(DEFINE-METHOD COMPUTE-IMAGE (SHAPE) (LIST 'COMPUTE-IMAGE SHAPE))
+;Value: COMPUTE-IMAGE
+(DEFINE MY-SHAPE (MAKE <SHAPE>))
+;Value: MY-SHAPE
+(IMAGE MY-SHAPE)
+;Value: (COMPUTE-IMAGE #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-INSTANCE (CLASS SINGLETON DATA)) #(#(\#\[\(\r\u\n\t\i\m\e\ \r\e\c\o\r\d\)\r\e\c\o\r\d-\t\y\p\e-\m\a\r\k\e\r\] DYLAN-CLASS (DEBUG-NAME INSTANCES SUBCLASSES SUPERCLASSES SLOTS CLASS-DATA INSTANCE-DATA-SIZE SEALED? READ-ONLY? ABSTRACT? SPECIFICITY SPECIFICITY-TOKEN)) <SHAPE> ((POPULATION) ...) ((POPULATION)) (#(# <VIEW> # # # # # 1 #F #F #F 1 #)) #(#(# POSITION #*PROCEDURE* #*PROCEDURE* # #F #F #F #F #F INSTANCE #T 0) #(# CACHED-IMAGE #*PROCEDURE* #*PROCEDURE* # #F #T #F #F #F INSTANCE #F 1) #(# IMAGE #*PROCEDURE* #*PROCEDURE* # #F #F #F #F #F VIRTUAL #F #F)) #() 2 #F #F #F 2 (SPECIFICITY . TOKEN)) #F #((<<UNINITIALIZED>>) ...)))
+((SETTER IMAGE) MY-SHAPE 'NEW-IMAGE)
+;Value: NEW-IMAGE
+(IMAGE MY-SHAPE)
+;Value: NEW-IMAGE
+(DEFINE FOO 10)
+;Value: FOO
+FOO
+;Value: 10
+(SET! FOO (+ 10 10))
+;Value: 20
+FOO
+;Value: 20
+(SETTER ELEMENT)
+;Value: #*PROCEDURE*
+(DEFINE %ORIGINAL-SET-ELEMENT (SETTER ELEMENT))
+;Value: %ORIGINAL-SET-ELEMENT
+(DEFINE-METHOD
+  %SET-ELEMENT
+  (SEQ INDEX VALUE)
+  (PRINT (LIST '%SET-ELEMENT SEQ INDEX VALUE))
+  VALUE)
+;Value: %SET-ELEMENT
+(SET! (SETTER ELEMENT) %SET-ELEMENT)
+;Value: #*PROCEDURE*
+(ID? (SETTER ELEMENT) %SET-ELEMENT)
+;Value: #T
+(SET! (ELEMENT 'FOO 'BAR) 'BAZ)(%SET-ELEMENT FOO BAR BAZ)
+
+;Value: BAZ
+((SETTER ELEMENT) 'FOO 'BAR 'BAZ)(%SET-ELEMENT FOO BAR BAZ)
+
+;Value: BAZ
+(SET! (SETTER ELEMENT) %ORIGINAL-SET-ELEMENT)
+;Value: #*PROCEDURE*
+(DEFINE FOO (VECTOR 'A 'B 'C 'D))
+;Value: FOO
+FOO
+;Value: #(A B C D)
+(ELEMENT FOO 2)
+;Value: C
+(SET! (ELEMENT FOO 2) 'SEA)
+;Value: SEA
+(ELEMENT FOO 2)
+;Value: SEA
+FOO
+;Value: #(A B SEA D)
+(DEFINE-METHOD TEST2 ((THING <OBJECT>)) (IF THING #T #F))
+;Value: TEST2
+(TEST2 'HELLO)
+;Value: #T
+(TEST2 #T)
+;Value: #T
+(TEST2 #F)
+;Value: #F
+(DEFINE-METHOD DOUBLE-NEGATIVE ((NUM <NUMBER>)) (IF (< NUM 0) (+ NUM NUM) NUM))
+;Value: DOUBLE-NEGATIVE
+(DOUBLE-NEGATIVE 11)
+;Value: 11
+(DOUBLE-NEGATIVE -11)
+;Value: -22
+(DEFINE-METHOD
+  SHOW-AND-TELL
+  ((THING <OBJECT>))
+  (IF THING (BEGIN (PRINT THING) #T) #F))
+;Value: SHOW-AND-TELL
+(SHOW-AND-TELL "hello")"hello"
+
+;Value: #T
+(DEFINE-METHOD BONUS-ILLUMINATED? (PINBALL POST) #T)
+;Value: BONUS-ILLUMINATED?
+(DEFINE-METHOD
+  ADD-BONUS-SCORE
+  (PLAYER DELTA)
+  (LIST 'ADD-BONUS-SCORE PLAYER DELTA))
+;Value: ADD-BONUS-SCORE
+(DEFINE CURRENT-PLAYER 'CURRENT-PLAYER)
+;Value: CURRENT-PLAYER
+(DEFINE PINBALL 'PINBALL)
+;Value: PINBALL
+(DEFINE POST 'POST)
+;Value: POST
+(WHEN (BONUS-ILLUMINATED? PINBALL POST) (ADD-BONUS-SCORE CURRENT-PLAYER 100000))
+;Value: (ADD-BONUS-SCORE CURRENT-PLAYER 100000)
+(DEFINE-METHOD DETECT-GAS? (NOSE) #F)
+;Value: DETECT-GAS?
+(DEFINE-METHOD
+  LIGHT
+  (MATCH)
+  (PRINT (LIST 'STRIKE MATCH))
+  (PRINT "KABOOM")
+  'OH-WELL)
+;Value: LIGHT
+(DEFINE NOSE 'NOSE)
+;Value: NOSE
+(DEFINE MATCH 'MATCH)
+;Value: MATCH
+(UNLESS (DETECT-GAS? NOSE) (LIGHT MATCH))(STRIKE MATCH)
+"KABOOM"
+
+;Value: OH-WELL
+(DEFINE NEW-POSITION 100)
+;Value: NEW-POSITION
+(DEFINE OLD-POSITION 0)
+;Value: OLD-POSITION
+(COND
+  ((< NEW-POSITION OLD-POSITION) "the new position is less")
+  ((= NEW-POSITION OLD-POSITION) "the positions are equal")
+  (ELSE: "the new position is greater"))
+;Value: "the new position is greater"
+(DEFINE-METHOD
+  CAREER-CHOICE
+  (STUDENT)
+  (COND
+    ((ID? STUDENT 'PAUL) 'ART)
+    ((ID? STUDENT 'JIM) 'HISTORY)
+    ((ID? STUDENT 'STEVE) 'SCIENCE)
+    (ELSE: 'BUM)))
+;Value: CAREER-CHOICE
+(DEFINE
+  BABBLE
+  (METHOD
+    (STUDENT)
+    (CASE
+      (CAREER-CHOICE STUDENT)
+      ((ART MUSIC DRAMA) (PRINT "Don't quit your day job."))
+      ((LITERATURE HISTORY LINGUISTICS) (PRINT "That really is fascinating."))
+      ((SCIENCE MATH ENGINEERING) (PRINT "Say, can you fix my VCR?"))
+      (ELSE: "I wish you luck."))))
+;Value: BABBLE
+(BABBLE 'NEIL)
+;Value: "I wish you luck."
+(BABBLE 'STEVE)"Say, can you fix my VCR?"
+
+;Value: #F
+(BABBLE 'JIM)"That really is fascinating."
+
+;Value: #F
+(BABBLE 'PAUL)"Don't quit your day job."
+
+;Value: #F
+(DEFINE
+  WHATITIS
+  (METHOD
+    (MY-OBJECT)
+    (SELECT
+      MY-OBJECT
+      INSTANCE?
+      ((<WINDOW> <VIEW> <RECTANGLE>) "it's a graphic object")
+      ((<NUMBER> <LIST> <SEQUENCE>) "it's something computational")
+      (ELSE: "Don't know what it is"))))
+;Value: WHATITIS
+(WHATITIS (MAKE <VIEW>))
+;Value: "it's a graphic object"
+(WHATITIS #())
+;Value: "it's something computational"
+(WHATITIS #F)
+;Value: "Don't know what it is"
+(IF #T (PRINT "it was true") #T #F)
+;Error: DYLAN::ERRORIF: invalid syntax: ~A ((#T (PRINT "it was true") #T #F))
+(IF #T (BEGIN (PRINT "it was true") #T) #F)"it was true"
+
+;Value: #T
+(DEFINE-METHOD
+  FACTORIAL
+  ((N <INTEGER>))
+  (FOR ((I N (- I 1)) (V 1 (* V I))) ((<= I 0) V)))
+;Value: FACTORIAL
+(DEFINE-METHOD
+  FIRST-EVEN
+  ((S <SEQUENCE>))
+  (FOR-EACH ((NUMBER S)) ((EVEN? NUMBER) NUMBER)))
+;Value: FIRST-EVEN
+(DEFINE-METHOD
+  SCHEDULE-GAME
+  ((CITY <SYMBOL>) (YEAR <NUMBER>))
+  (PRINT (LIST YEAR CITY)))
+;Value: SCHEDULE-GAME
+(DEFINE-METHOD
+  SCHEDULE-OLYMPIC-GAMES
+  ((CITIES <SEQUENCE>) (START-YEAR <NUMBER>))
+  (FOR-EACH
+    ((YEAR (RANGE FROM: START-YEAR BY: 4)) (CITY CITIES))
+    ()
+    (SCHEDULE-GAME CITY YEAR)))
+;Value: SCHEDULE-OLYMPIC-GAMES
+(SCHEDULE-OLYMPIC-GAMES
+  #(BOSTON NEW-YORK BALTIMORE CHICAGO DENVER SAN-FRANCISCO)
+  2000)(2000 BOSTON)
+(2004 NEW-YORK)
+(2008 BALTIMORE)
+(2012 CHICAGO)
+(2016 DENVER)
+(2020 SAN-FRANCISCO)
+
+;Value: #F
+(BEGIN (DOTIMES (I 6) (PRINT "bang!")) (PRINT "click!"))"bang!"
+"bang!"
+"bang!"
+"bang!"
+"bang!"
+"bang!"
+"click!"
+
+;Value: #F
+(DEFINE-METHOD
+  FIRST-EVEN
+  ((SEQ <SEQUENCE>))
+  (BIND-EXIT (EXIT) (DO (METHOD (ITEM) (WHEN (EVEN? ITEM) (EXIT ITEM))) SEQ)))
+;Value: FIRST-EVEN
+(FIRST-EVEN '(1 3 5 4 7 9 10))
+;Value[1]: 4
++
+;Value: #*PROCEDURE*
+'+
+;Value: +
+'+
+;Value: +
+''+
+;Value: '+
+(+ 10 10)
+;Value: 20
+'(+ 10 10)
+;Value: (+ 10 10)
+'(+ 10 10)
+;Value: (+ 10 10)
+(APPLY + 1 '(2 3))
+;Value: 6
+(+ 1 2 3)
+;Value: 6
+(DEFINE MATH-FUNCTIONS (LIST + * / -))
+;Value: MATH-FUNCTIONS
+MATH-FUNCTIONS
+;Value: (#*PROCEDURE* #*PROCEDURE* #*PROCEDURE* #*PROCEDURE*)
+(FIRST MATH-FUNCTIONS)
+;Value: #*PROCEDURE*
+(APPLY (FIRST MATH-FUNCTIONS) 1 2 '(3 4))
+;Value: 10
+(METHOD (NUM1 NUM2) (+ NUM1 NUM2))
+;Value: #*PROCEDURE*
+(DEFINE-CLASS
+  <PERSON>
+  (<OBJECT>)
+  (NAME INIT-KEYWORD: NAME:)
+  (AGE INIT-KEYWORD: AGE:))
+;Value: <PERSON>
+(DEFINE
+  PERSON-LIST
+  (LIST
+    (MAKE <PERSON> NAME: "Paul" AGE: 15)
+    (MAKE <PERSON> NAME: "Jill" AGE: 3)
+    (MAKE <PERSON> NAME: "Jack" AGE: 2)
+    (MAKE <PERSON> NAME: "Peter" AGE: 12)))
+;Value: PERSON-LIST
+(FOR-EACH
+  ((PERSON
+     (SORT
+       PERSON-LIST
+       TEST:
+       (METHOD (PERSON1 PERSON2) (< (AGE PERSON1) (AGE PERSON2))))))
+  ()
+  (PRINT (NAME PERSON)))"Jack"
+"Jill"
+"Peter"
+"Paul"
+
+;Value: #F
+(BIND ((DOUBLE (METHOD (NUMBER) (+ NUMBER NUMBER)))) (DOUBLE (DOUBLE 10)))
+;Value: 40
+(DEFINE-METHOD
+  DOUBLE
+  ((MY-METHOD <FUNCTION>))
+  (METHOD (!REST ARGS) (APPLY MY-METHOD ARGS) (APPLY MY-METHOD ARGS) #F))
+;Value: DOUBLE
+(DEFINE PRINT-TWICE (DOUBLE DISPLAY))
+;Value: PRINT-TWICE
+PRINT-TWICE
+;Value: #*PROCEDURE*
+(PRINT-TWICE "The rain in Spain. . .")The rain in Spain. . .The rain in Spain. . .
+;Value: #F
+(PRINT-TWICE 55)5555
+;Value: #F
+(DEFINE-METHOD
+  ROOT-MEAN-SQUARE
+  ((S <SEQUENCE>))
+  (BIND-METHODS
+    ((AVERAGE (NUMBERS) (/ (REDUCE1 + NUMBERS) (SIZE NUMBERS)))
+      (SQUARE (N) (* N N)))
+    (SQRT (AVERAGE (MAP SQUARE S)))))
+;Value: ROOT-MEAN-SQUARE
+(ROOT-MEAN-SQUARE '(5 6 6 7 4))
+;Value: 5.692099788303083
+(DEFINE-METHOD
+  NEWTONS-SQRT
+  (X)
+  (BIND-METHODS
+    ((SQRT1 (GUESS) (IF (CLOSE? GUESS) GUESS (SQRT1 (IMPROVE GUESS))))
+      (CLOSE? (GUESS) (< (ABS (- (* GUESS GUESS) X)) .0001))
+      (IMPROVE (GUESS) (/ (+ GUESS (/ X GUESS)) 2)))
+    (SQRT1 1)))
+;Value: NEWTONS-SQRT
+(NEWTONS-SQRT 25)
+;Value: 5.000000000053722
+(DEFINE-METHOD DOUBLE ((THING <NUMBER>)) (+ THING THING))
+;Value: DOUBLE
+(DOUBLE 10)
+;Value: 20
+(DOUBLE 4.5)
+;Value: 9.
+(DEFINE-METHOD DOUBLE ((THING <INTEGER>)) (* THING 2))
+;Value: DOUBLE
+(DEFINE-METHOD DOUBLE ((THING (SINGLETON 'CUP))) 'PINT)
+;Value: DOUBLE
+(DOUBLE 'CUP)
+;Value: PINT
+(DEFINE-METHOD
+  DOUBLE
+  ((NUM <FLOAT>))
+  (PRINT "doubling a floating-point number")
+  (NEXT-METHOD))
+;Value: DOUBLE
+(DOUBLE 10.5)"doubling a floating-point number"
+
+;Value: 21.
+(DEFINE-CLASS <FILE> (<OBJECT>) NAME)
+;Value: <FILE>
+(DEFINE-METHOD
+  SHOW
+  ((DEVICE <WINDOW>) (THING <CHARACTER>))
+  (PRINT '(SHOW <WINDOW> <CHARACTER>)))
+;Value: SHOW
+(DEFINE-METHOD
+  SHOW
+  ((DEVICE <WINDOW>) (THING <STRING>))
+  (PRINT '(SHOW <WINDOW> <STRING>)))
+;Value: SHOW
+(DEFINE-METHOD
+  SHOW
+  ((DEVICE <WINDOW>) (THING <RECTANGLE>))
+  (PRINT '(SHOW <WINDOW> <RECTANGLE>)))
+;Value: SHOW
+(DEFINE-METHOD
+  SHOW
+  ((DEVICE <FILE>) (THING <CHARACTER>))
+  (PRINT '(SHOW <FILE> <CHARACTER>)))
+;Value: SHOW
+(DEFINE-METHOD
+  SHOW
+  ((DEVICE <FILE>) (THING <STRING>))
+  (PRINT '(SHOW <FILE> <STRING>)))
+;Value: SHOW
+(SHOW (MAKE <WINDOW>) #\return)(SHOW <WINDOW> <CHARACTER>)
+
+;Value: #F
+(SHOW (MAKE <WINDOW>) "Return")(SHOW <WINDOW> <STRING>)
+
+;Value: #F
+(SHOW (MAKE <WINDOW>) (MAKE <RECTANGLE>))(SHOW <WINDOW> <RECTANGLE>)
+
+;Value: #F
+(SHOW (MAKE <FILE>) #\return)(SHOW <FILE> <CHARACTER>)
+
+;Value: #F
+(SHOW (MAKE <FILE>) "Return")(SHOW <FILE> <STRING>)
+
+;Value: #F
+(MAKE <GENERIC-FUNCTION> REQUIRED: 3)
+;Value: #*PROCEDURE*
+(MAKE <GENERIC-FUNCTION> REQUIRED: 3 DEBUG-NAME: 'FOO)
+;Value: #*PROCEDURE*
+(DEFINE EXPAND (MAKE <GENERIC-FUNCTION> REQUIRED: 1 DEBUG-NAME: 'EXPAND))***** EXPAND is redefined
+
+;Value: EXPAND
+(EXPAND 55)
+;Error: generic-dispatch -- no applicable methods #*PROCEDURE* (55)
+(DEFINE-METHOD DOUBLE ((THING (SINGLETON 'CUP))) 'PINT)
+;Value: DOUBLE
+(DOUBLE 'CUP)
+;Value: PINT
+(DOUBLE 10)
+;Value: 20
+(DEFINE-METHOD FACTORIAL ((NUM <INTEGER>)) (* NUM (FACTORIAL (- NUM 1))))
+;Value: FACTORIAL
+(DEFINE-METHOD FACTORIAL ((NUM (SINGLETON 0))) 1)
+;Value: FACTORIAL
+(FACTORIAL 5)
+;Value: 120
+(DO (METHOD (A B) (PRINT (+ A B))) '(100 100 200 200) '(1 2 3 4))101
+102
+203
+204
+
+;Value: #F
+(MAP + '(100 100 200 200) '(1 2 3 4))
+;Value: (101 102 203 204)
+(MAP-AS <VECTOR> + '(100 100 200 200) '(1 2 3 4))
+;Value: #(101 102 203 204)
+(DEFINE X '(100 100 200 200))
+;Value: X
+(MAP-INTO X + '(1 2 3 4))
+;Value: (101 102 203 204)
+X
+;Value: (101 102 203 204)
+(ANY? > '(1 2 3 4) '(5 4 3 2))
+;Value: #T
+(ANY? EVEN? '(1 3 5 7))
+;Value: #F
+(EVERY? > '(1 2 3 4) '(5 4 3 2))
+;Value: #F
+(EVERY? ODD? '(1 3 5 7))
+;Value: #T
+(DEFINE HIGH-SCORE 10)
+;Value: HIGH-SCORE
+(REDUCE MAX HIGH-SCORE '(3 1 4 1 5 9))
+;Value: 10
+(REDUCE MAX HIGH-SCORE '(3 12 9 8 8 6))
+;Value: 12
+(REDUCE1 + '(1 2 3 4 5))
+;Value: 15
+(DEFINE FLAVORS #(CHOCOLATE PISTACHIO PUMPKIN))
+;Value: FLAVORS
+(MEMBER? 'CHOCOLATE FLAVORS)
+;Value: #T
+(MEMBER? 'BANANA FLAVORS)
+;Value: #F
+(DEFINE-METHOD
+  HAS-NUTS?
+  (FLAVOR)
+  (MEMBER? FLAVOR #(PISTACHIO BUTTER-PECAN MACADAMIA)))
+;Value: HAS-NUTS?
+FLAVORS
+;Value: #(CHOCOLATE PISTACHIO PUMPKIN)
+(FIND-KEY FLAVORS HAS-NUTS?)
+;Value: 1
+(ELEMENT FLAVORS 1)
+;Value: PISTACHIO
+(DEFINE NUMBERS (LIST 10 13 16 19))
+;Value: NUMBERS
+(REPLACE-ELEMENTS! NUMBERS ODD? DOUBLE)
+;Value: (10 26 16 38)
+(DEFINE X (LIST 'A 'B 'C 'D 'E 'F))
+;Value: X
+(FILL! X 3 START: 2)
+;Value: (A B 3 3 3 3)
+(DEFINE NUMBERS '(3 4 5))
+;Value: NUMBERS
+(ADD NUMBERS 1)
+;Value: (1 3 4 5)
+NUMBERS
+;Value: (3 4 5)
+(DEFINE NUMBERS (LIST 3 4 5))
+;Value: NUMBERS
+(ADD! NUMBERS 1)
+;Value: (1 3 4 5)
+(ADD-NEW '(3 4 5) 1)
+;Value: (1 3 4 5)
+(ADD-NEW '(3 4 5) 4)
+;Value: (3 4 5)
+(ADD-NEW! (LIST 3 4 5) 1)
+;Value: (1 3 4 5)
+(ADD-NEW! (LIST 3 4 5) 4)
+;Value: (3 4 5)
+(REMOVE '(3 1 4 1 5 9) 1)
+;Value: (3 4 5 9)
+(REMOVE! (LIST 3 1 4 1 5 9) 1)
+;Value: (3 4 5 9)
+(CHOOSE EVEN? '(3 1 4 1 5 9))
+;Value: (4)
+(CHOOSE-BY EVEN? (RANGE FROM: 1) '(A B C D E F G H I))
+;Value: (B D F H)
+(INTERSECTION
+  '(JOHN PAUL GEORGE RINGO)
+  '(RICHARD GEORGE EDWARD CHARLES JOHN))
+;Value: (JOHN GEORGE)
+(UNION
+  '(BUTTER FLOUR SUGAR SALT EGGS)
+  '(EGGS BUTTER MUSHROOMS ONIONS SALT))
+;Value: (BUTTER FLOUR SUGAR SALT EGGS MUSHROOMS ONIONS)
+(REMOVE-DUPLICATES '(SPAM EGGS SPAM SAUSAGE SPAM SPAM SPAM))
+;Value: (SPAM EGGS SAUSAGE)
+(REMOVE-DUPLICATES! '(SPAM EGGS SPAM SAUSAGE SPAM SPAM))
+;Value: (SPAM EGGS SAUSAGE)
+(DEFINE HAMLET '(TO BE OR NOT TO BE))
+;Value: HAMLET
+(ID? HAMLET (COPY-SEQUENCE HAMLET))
+;Value: #F
+(COPY-SEQUENCE HAMLET START: 2 END: 4)
+;Value: (OR NOT)
+(CONCATENATE-AS <STRING> '(#\n #\o #\n) '(#\f #\a #\t))
+;Value: "nonfat"
+(CONCATENATE-AS <VECTOR> '(0 1 2) '(3 4 5) '(6 7 8))
+;Value: #(0 1 2 3 4 5 6 7 8)
+(CONCATENATE "low-" "calorie")
+;Value: "low-calorie"
+(CONCATENATE '(0 1 2) '(3 4 5) '(6 7 8))
+;Value: (0 1 2 3 4 5 6 7 8)
+(DEFINE PHRASE "I hate oatmeal.")
+;Value: PHRASE
+(REPLACE-SUBSEQUENCE! PHRASE "like" START: 2)
+;Value: "I like oatmeal."
+(DEFINE X '(BIM BAM BOOM))
+;Value: X
+(REVERSE X)
+;Value: (BOOM BAM BIM)
+X
+;Value: (BIM BAM BOOM)
+(REVERSE! '(BIM BAM BOOM))
+;Value: (BOOM BAM BIM)
+(DEFINE NUMBERS '(3 1 4 1 5 9))
+;Value: NUMBERS
+(SORT NUMBERS)
+;Value: (1 1 3 4 5 9)
+NUMBERS
+;Value: (3 1 4 1 5 9)
+(SORT! '(3 1 4 1 5 9))
+;Value: (1 1 3 4 5 9)
+(LAST '(EMPEROR OF CHINA))
+;Value: CHINA
+(SUBSEQUENCE-POSITION "Ralph Waldo Emerson" "Waldo")
+;Value: 6
+(AREF #(7 8 9) 1)
+;Value: 8
+(DEFINE X #(7 8 9))
+;Value: X
+(SET! (AREF X 1) 5)
+;Value: 5
+X
+;Value: #(7 5 9)
+(DEFINE X #(7 8 9))
+;Value: X
+((SETTER AREF) X 1 5)
+;Value: 5
+X
+;Value: #(7 5 9)
+(DIMENSIONS (MAKE <ARRAY> DIMENSIONS: '(4 4)))
+;Value: (4 4)
+(CONS 1 2)
+;Value: (1 . 2)
+(CONS 1 '(2 3 4 5))
+;Value: (1 2 3 4 5)
+(LIST 1 2 3)
+;Value: (1 2 3)
+(LIST (+ 4 3) (- 4 3))
+;Value: (7 1)
+(LIST* 1 2 3 '(4 5 6))
+;Value: (1 2 3 4 5 6)
+(CAR '(4 5 6))
+;Value: 4
+(CAR '())
+;Value: ()
+(CDR '(4 5 6))
+;Value: (5 6)
+(CDR '())
+;Value: ()
+(DEFINE X '(4 5 6))
+;Value: X
+(SET! (CAR X) 9)
+;Value: 9
+X
+;Value: (9 5 6)
+(DEFINE X '(4 5 6))
+;Value: X
+(SET! (CDR X) '(A B C))
+;Value: (A B C)
+X
+;Value: (4 A B C)
+(DEFINE X "Van Gogh")
+;Value: X
+(AS-LOWERCASE X)
+;Value: "van gogh"
+X
+;Value: "Van Gogh"
+(DEFINE X "Van Gogh")
+;Value: X
+(AS-LOWERCASE! X)
+;Value: "van gogh"
+X
+;Value: "van gogh"
+(DEFINE X "Van Gogh")
+;Value: X
+(AS-UPPERCASE X)
+;Value: "VAN GOGH"
+X
+;Value: "Van Gogh"
+(DEFINE X "Van Gogh")
+;Value: X
+(AS-UPPERCASE! X)
+;Value: "VAN GOGH"
+X
+;Value: "VAN GOGH"
+(DEFINE
+  HANDLEIT
+  (METHOD
+    (IT)
+    (HANDLER-CASE
+      (IT)
+      ((<TYPE-ERROR>) "there was a type-error")
+      ((<ERROR>) "there was an error")
+      ((<WARNING>) "there was a warning"))))
+;Value: HANDLEIT
+(HANDLEIT
+  (METHOD
+    ()
+    (SIGNAL
+      (MAKE
+        <SIMPLE-WARNING>
+        FORMAT-STRING:
+        "simple warning"
+        FORMAT-ARGUMENTS:
+        '()))))
+;Value: "there was a warning"
+(HANDLEIT (METHOD () (CHECK-TYPE 'FOO <STRING>)))
+;Value: "there was a type-error"
+(HANDLEIT (METHOD () (ERROR "simple error")))
+;Value: "there was an error"
+(AS <SYMBOL> "foo")
+;Value: FOO
+(ID? 'FOO (AS <SYMBOL> "Foo"))
+;Value: #T
+'FOO
+;Value: FOO
+(AS <KEYWORD> "foo")
+;Value: FOO:
+(AS <STRING> 'FOO)
+;Value: "FOO"
+(AS <STRING> 'BAR:)
+;Value: "BAR"
+(DEFINE-METHOD SUM ((NUMBERS <SEQUENCE>)) (REDUCE1 + NUMBERS))
+;Value: SUM
+(DEFINE-METHOD SQUARE ((X <NUMBER>)) (* X X))
+;Value: SQUARE
+(DEFINE-METHOD SQUARE-ALL ((COORDS <SEQUENCE>)) (MAP SQUARE COORDS))
+;Value: SQUARE-ALL
+(DEFINE DISTANCE (COMPOSE SQRT SUM SQUARE-ALL))
+;Value: DISTANCE
+(DISTANCE '(3 4 5))
+;Value: 7.071067811865476
+(DEFINE-METHOD
+  FEMALE?
+  (NAME)
+  (MEMBER? NAME #(MICHELLE ANNE ANN BARBARA ROSEANNE SUSAN)))
+;Value: FEMALE?
+(MAP FEMALE? '(MICHELLE ARNOLD ROSEANNE))
+;Value: (#T #F #T)
+(MAP (COMPLEMENT FEMALE?) '(MICHELLE ARNOLD ROSEANNE))
+;Value: (#F #T #F)
+(MAP (CURRY + 1) '(3 4 5))
+;Value: (4 5 6)
+(DEFINE YUPPIFY (RCURRY CONCATENATE ", ayup"))
+;Value: YUPPIFY
+(YUPPIFY "I'm from New Hampsha")
+;Value: "I'm from New Hampsha, ayup"
+((ALWAYS 1) 'X 'Y 'Z)
+;Value: 1
+((ALWAYS #T) #F #F)
+;Value: #T
+
+
+#F

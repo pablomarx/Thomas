@@ -1,6 +1,7 @@
 ; -*-Scheme-*-
 ;
-; $Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
+; $Id: hash.scm,v 1.5 1992/09/23 15:23:06 birkholz Exp $
+; $MIT-Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
 ;
 ; Copyright (c) 1988, 1989 Massachusetts Institute of Technology
 ;
@@ -32,7 +33,6 @@
 ; promotional, or sales literature without prior written consent from
 ; MIT in each case.
 
-
 ; This file requires the following non-IEEE primitives:
 
 ; weak-cons, weak-car, weak-cdr, set-weak-cdr! for manipulating
@@ -43,7 +43,7 @@
 ; after-gc registers a thunk (procedure of no arguments) to be called
 ; after each garbage collection is complete and before Scheme resumes
 ; running.
-
+
 ;;;; One Dimensional Property Tables
 
 (define (initialize-oned-table-package!)

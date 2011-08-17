@@ -16,16 +16,16 @@
 ;* their best efforts to return to Digital any such changes, enhancements or
 ;* extensions that they make and inform Digital of noteworthy uses of this
 ;* software.  Correspondence should be provided to Digital at:
-;* 
+;*
 ;*			Director, Cambridge Research Lab
 ;*			Digital Equipment Corp
 ;*			One Kendall Square, Bldg 700
 ;*			Cambridge MA 02139
-;* 
+;*
 ;* This software may be distributed (but not offered for sale or transferred
 ;* for compensation) to third parties, provided such third parties agree to
-;* abide by the terms and conditions of this notice.  
-;* 
+;* abide by the terms and conditions of this notice.
+;*
 ;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
 ;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
 ;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
@@ -35,23 +35,52 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: scc-specific.scm,v 1.12 1992/09/11 21:36:15 jmiller Exp $
+; $Id: scc-specific.scm,v 1.16 1992/09/23 15:35:25 birkholz Exp $
 
-;;;; This file contains the definitions of all functions used in the
-;;;; implementation of Dylan which aren't part of R4RS.
+;;; This file contains the definitions of all functions used in the
+;;; implementation of Dylan which aren't part of R4RS.
 
 (module sccspecific)
 
-;;; Populations
+;;;; Populations
 
 ;(load "aftergc.sc")
 ;(load "poplat.sc")
 
-;;; Hash tables that use weak links for objects
+;;;; Hash tables that use weak links for objects
 
 ;(load "hash.sc")
 
-;;; Stuff for use in exception code (exception.scm)
+;;;; Record package
+
+;(load "record.sc")
+
+;;;; Compiler's error procedure.
+
+(define (dylan::error string . args)
+  (error 'dylan::error (string-append string ": ~A") args))
+
+;;;; Load-up
+
+(define (dylan::load string)
+  (load (string-append string ".scm")))
+
+(define (implementation-specific:generate-file in-exprs out-expr)
+  (define (print x) (newline) (display x))
+  (print ";;;; Compiled output:")
+  (print "")
+  (print "(module dylan-compiled-code)")
+  (print "")
+  (pp out-expr)
+  (newline))
+
+;;;; Eval
+
+(define (implementation-specific:eval expression)
+  (eval expression))
+
+;;;; Interface between Dylan condition system (runtime-exceptions.scm) and
+;;;; native condition system.
 
 (define *dylan-handlers* (list))
 (define *scc-error-handler* *error-handler*)
@@ -131,21 +160,32 @@
   ;; This can't happen if is-reflected-error? is returning #F  
   (car 34))
 
+;;;; Additional Dylan bindings
+
+(define (dylan:scheme-variable-ref mv nm variable-name)
+  (eval variable-name))
+
+(define (dylan:scheme-procedure-ref mv nm variable-name)
+  (make-dylan-callable (eval variable-name)))
+
+(define (dylan:pp mv nm obj)
+  mv nm					; Ignored
+  (pp obj))
+
+(define implementation-specific:additional-dylan-bindings
+  `((pp dylan:pp)
+    (scheme-variable dylan:scheme-variable-ref)
+    (scheme-procedure dylan:scheme-procedure-ref)))
+
+;;;; Other things
+
 ;;; For conversion from strings to symbols, we need a function that
 ;;; canonicalizes the case of the string.
 
 (define (canonicalize-string-for-symbol string)
   (list->string (map char-upcase (string->list string))))
 
-;; Record package
-
-;(load "record.sc")
-
-;; sort
-
 ;(load "msort.sc")
-
-;; write-line
 
 (define (write-line x)
   (write x)
@@ -153,13 +193,9 @@
 
 ;; pp -- already provided
 
-;; dynamic-wind
-
 ;(load "dynwnd.sc")
 
-;; Imaginary numbers aren't supported by all implementations, and some
-;; numeric functions are optional
-
+;;; Imaginary numbers aren't supported by all implementations
 (define (get-+i)
   (error 'get-+i "Complex numbers aren't supported"))
 
@@ -179,42 +215,3 @@
       (get-+i)))
 (define (rationalize x . y)
   (error 'rationalize "We aren't rational"))
-
-;; Called at compile-time only
-
-(define (dylan::error string . args)
-  (error 'dylan::error (string-append string ": ~A") args))
-
-;; Load-up
-
-(define (dylan::load string)
-  (load (string-append string ".scm")))
-
-(define implementation-specific:file-name "z1.dyl")
-
-(define (implementation-specific:generate-file in-exprs out-expr)
-  (define (print x) (newline) (display x))
-  (print ";;;; Compiled output:")
-  (print "")
-  (print "(module dylan-compiled-code)")
-  (print "")
-  (pp out-expr)
-  (newline))
-
-;; Eval
-
-(define (implementation-specific:eval expression)
-  (eval expression))
-
-;;;; Additional Dylan bindings
-
-(define (dylan:scheme-variable-ref mv nm variable-name)
-  (eval variable-name))
-
-(define (dylan:scheme-procedure-ref mv nm variable-name)
-  (make-dylan-callable (eval variable-name)))
-
-(define implementation-specific:additional-dylan-bindings
-  `((pp (make-dylan-callable pp 1))
-    (scheme-variable dylan:scheme-variable-ref)
-    (scheme-procedure dylan:scheme-procedure-ref)))

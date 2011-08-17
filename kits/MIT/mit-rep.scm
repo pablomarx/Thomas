@@ -16,16 +16,16 @@
 ;* their best efforts to return to Digital any such changes, enhancements or
 ;* extensions that they make and inform Digital of noteworthy uses of this
 ;* software.  Correspondence should be provided to Digital at:
-;* 
+;*
 ;*			Director, Cambridge Research Lab
 ;*			Digital Equipment Corp
 ;*			One Kendall Square, Bldg 700
 ;*			Cambridge MA 02139
-;* 
+;*
 ;* This software may be distributed (but not offered for sale or transferred
 ;* for compensation) to third parties, provided such third parties agree to
-;* abide by the terms and conditions of this notice.  
-;* 
+;* abide by the terms and conditions of this notice.
+;*
 ;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
 ;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
 ;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
@@ -35,16 +35,23 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
+; $Id: mit-rep.scm,v 1.3 1992/09/21 21:29:31 birkholz Exp $
+
+;;; Use a package called (THOMAS), but also keep a list of known module
+;;; variables in !thomas-rep-module-variables in that environment.
+
 (define (empty-thomas-environment!)
-  (let ((package (name->package '(Thomas)))
+  (let ((package (name->package '(THOMAS)))
 	(parent (name->package '()))
 	(set-package/children!
 	 (environment-lookup (->environment '(package))
 			     'set-package/children!)))
     (set-package/children! parent
       (delq! package (package/children parent)))
-    (package/add-child! parent 'Thomas (let () (the-environment)))
-    'done))
+    (package/add-child! parent 'THOMAS
+			(let ((!THOMAS-REP-MODULE-VARIABLES '()))
+			  (the-environment)))
+    unspecific))
 
 (define (thomas-rep)
   (repl/start (make-thomas-repl)
@@ -52,7 +59,7 @@
 	       (lambda (port)
 		 (let ((n-names
 			(length (environment-bindings
-				 (->environment '(Thomas))))))
+				 (->environment '(THOMAS))))))
 		   (newline port)
 		   (display "Entering Thomas" port)
 		   (newline port)
@@ -60,7 +67,9 @@
 		   (display (if (= n-names 1) "is" "are") port)
 		   (display " now " port)
 		   (display n-names port)
-		   (display " defined names available.)" port)
+		   (display " defined name" port)
+		   (display (if (= n-names 1) "" "s") port)
+		   (display "s available.)" port)
 		   (newline port))))))
 
 (define make-thomas-repl
@@ -71,16 +80,16 @@
 			      'default-repl-operations)))
     (lambda ()
       (let ((p (nearest-repl)))
-	(make-cmdl p			; parent
-		   (cmdl/port p)	; port
-		   thomas-repl-driver	; driver
-		   (make-repl-state	; state
-		    "? "		;     prompt
-		    (->environment '(Thomas)) ;    environment
-		    (repl/syntax-table p) ;     syntax-table
-		    false		;     condition
+	(make-cmdl p				; parent
+		   (cmdl/port p)		; port
+		   thomas-repl-driver		; driver
+		   (make-repl-state		; state
+		    "?"				;     prompt
+		    (->environment '(Thomas))	;     environment
+		    (repl/syntax-table p)	;     syntax-table
+		    false			;     condition
 		    )
-		   default-repl-operations ; operations
+		   default-repl-operations	; operations
 		   )))))
 
 ;;; This is a modified copy of repl-driver from runtime/rep.scm
@@ -89,41 +98,53 @@
   (let ((reader-history (repl/reader-history repl)))
     (fluid-let ((standard-error-hook false)
 		(standard-warning-hook false))
-      (let ((env (->environment '(Thomas))))
-	(let loop ((module-variables (environment-bound-names env)))
-	  (loop
-	   (thomas-eval env module-variables
-			(let ((s-expression
-			       (prompt-for-command-expression
-				(string-append (number->string (cmdl/level repl))
-					       " "
-					       (repl/prompt repl))
-				(cmdl/port repl))))
-			  (repl-history/record! reader-history s-expression)
-			  s-expression))))))))
+      (let ((env (->environment '(THOMAS))))
+	(let loop ()
+	  (thomas-eval (let ((s-expression
+			      (prompt-for-command-expression
+			       (string-append
+				(number->string (cmdl/level repl))
+				" "
+				(repl/prompt repl))
+			       (cmdl/port repl))))
+			 (repl-history/record! reader-history s-expression)
+			 s-expression)
+		       env)
+	  (loop))))))
 
-(define (thomas-eval environment module-variables sexpr)
-   (compile-expression
-    sexpr '!MULTIPLE-VALUES module-variables
-    (lambda (new-vars preamble compiled-output)
-      (eval
-       `(BEGIN
-	  ,@preamble
-	  (LET* ((!MULTIPLE-VALUES (VECTOR '()))
-		 (!RESULT ,compiled-output))
-	    (NEWLINE)
-	    (IF (EQ? !RESULT !MULTIPLE-VALUES)
-		(LET* ((RESULT (VECTOR-REF !MULTIPLE-VALUES 0))
-		       (COUNT (LENGTH RESULT)))
-		  (DISPLAY COUNT)
-		  (DISPLAY " value")
-		  (IF (NOT (= COUNT 1)) (DISPLAY "s"))
-		  (DISPLAY ":")
-		  (FOR-EACH (LAMBDA (X) (NEWLINE) (WRITE X)) RESULT))
-		(BEGIN
-		  (DISPLAY "Result: ")
-		  (WRITE !RESULT)))))
-       environment)
-      (append new-vars module-variables))))
+(define (thomas-eval sexpr environment)
+  (compile-expression
+   sexpr
+   '!MULTIPLE-VALUES
+   (environment-lookup environment '!THOMAS-REP-MODULE-VARIABLES)
+   (lambda (new-vars preamble compiled-output)
+     (eval
+      `(BEGIN
+	 ,@preamble
+	 (LET* ((!MULTIPLE-VALUES (VECTOR '()))
+		(!RESULT ,compiled-output))
+	   (IF (EQ? !RESULT !MULTIPLE-VALUES)
+	       (LET RESULT-LOOP
+		   ((COUNT 1)
+		    (RESULTS (VECTOR-REF !MULTIPLE-VALUES 0)))
+		 (IF (PAIR? RESULTS)
+		     (LET ((RESULT (CAR RESULTS)))
+		       (NEWLINE)
+		       (DISPLAY ";Value[")(DISPLAY COUNT)(DISPLAY "]: ")
+		       (WRITE RESULT)
+		       (RESULT-LOOP (+ 1 COUNT) (CDR RESULTS)))
+		     (NEWLINE)))
+	       (IF (UNDEFINED-VALUE? !RESULT)
+		   (BEGIN
+		     (NEWLINE)(DISPLAY ";No value")(NEWLINE))
+		   (BEGIN
+		     (NEWLINE)(DISPLAY ";Value: ")(WRITE !RESULT)(NEWLINE)))))
+	 (SET! !THOMAS-REP-MODULE-VARIABLES
+	       (APPEND ',new-vars !THOMAS-REP-MODULE-VARIABLES)))
+      environment))))
 
 (empty-thomas-environment!)
+
+(display "
+Apply thomas-rep to start a Thomas read-eval-print loop.
+")
