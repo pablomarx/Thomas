@@ -1,35 +1,35 @@
+-*-Indented-Text-*-
+
              Overview of the DEC Thomas->Scheme Compiler.
 
-This is the directory for Thomas, a compiler written at Digital
-Equipment Corporation's Cambridge Research Laboratory.  Thomas
-compiles a language compatible with the language described in the book
-"Dylan(TM) an object-oriented dynamic language" by Apple Computer
-Eastern Research and Technology, April 1992; the file DIFFERENCES
-lists the known differences.
+This is the directory for Thomas, a compiler written at Digital Equipment
+Corporation's Cambridge Research Laboratory.  Thomas compiles a language
+compatible with the language described in the book "Dylan(TM) an
+object-oriented dynamic language" by Apple Computer Eastern Research and
+Technology, April 1992; the file DIFFERENCES lists the known differences.
 
-We have made every effort to minimize the differences between Thomas
-and Dylan(TM), and to remove bugs, but help from others would be
-greatly appreciated.  The original development team consisted of:
+We have made every effort to minimize the differences between Thomas and
+Dylan(TM), and to remove bugs, but help from others would be greatly
+appreciated.  The original development team consisted of:
 
           Matt Birkholz (Birkholz@crl.dec.com)
           Jim Miller (JMiller@crl.dec.com)
           Ron Weiss (RWeiss@crl.dec.com)
 
 In addition, Joel Bartlett (Bartlett@wrl.dec.com), Marc Feeley
-(Feeley@iro.umontreal.ca), Guillermo Rozas (Jinx@zurich.ai.mit.edu)
-and Ralph Swick (Swick@crl.dec.com) contributed time and energy to the
-initial release.
+(Feeley@iro.umontreal.ca), Guillermo Rozas (Jinx@zurich.ai.mit.edu) and
+Ralph Swick (Swick@crl.dec.com) contributed time and energy to the initial
+release.
 
 Comments, questions, suggestions, help, etc. should be directed to:
           info-thomas@crl.dec.com
 Requests to be added to this mailing list should be sent to:
           info-thomas-request@crl.dec.com
 
-All general comments about Thomas should go to the above address.
-Comments specifically about Thomas running in a particular Scheme
-implementation should be directed to the maintainer of the
-implementation.  As of September 11, 1992 these maintainers are as
-follows:
+All general comments about Thomas should go to the above address.  Comments
+specifically about Thomas running in a particular Scheme implementation
+should be directed to the maintainer of the implementation.  As of
+September 11, 1992 these maintainers are as follows:
 
 MIT CScheme: info-thomas-cscheme@crl.dec.com
 scc:         info-thomas-scc@crl.dec.com
@@ -39,106 +39,108 @@ gambit:      feeley@iro.umontreal.ca
 
 In building Thomas, our goals (in order of priority) were:
 
-(1) To learn about the Dylan(TM) language, by building an
-    implementation based solely on the description in the book.
+(1) To learn about the Dylan(TM) language, by building an implementation
+    based solely on the description in the book.
 
-(2) To help others learn about the language by producing source code
-    for an implementation that was well structured, easy to read, and
-    was publically available.
+(2) To help others learn about the language by producing source code for an
+    implementation that was well structured, easy to read, and was
+    publically available.
 
 (3) To build a system we could use to actually write small Dylan(TM)
     programs, to get a feel for the language through using it.
 
-We feel we have met these three goals as well as can be expected in a
-four week project with three people.  It was never our intention to
-produce an implementation that performs well, and Thomas has no
-optimizations of any kind.  It does not perform well.  This reflects
-our goals and not necessarily the design of the language itself.
+We feel we have met these three goals as well as can be expected in a four
+week project with three people.  It was never our intention to produce an
+implementation that performs well, and Thomas has no optimizations of any
+kind.  It does not perform well.  This reflects our goals and not
+necessarily the design of the language itself.
 
-Thomas is NOT Dylan(TM).  We have not received approval for the use of
-the trademark, and we have not received a copy of a test suite other
-than the examples from the book itself.  We may, at some future date,
-pursue these issues with Apple.  The Thomas system was built with no
-direct input, aid, assistance or discussion with Apple.  All design
-and implementation decisions in Thomas reflect choices by the Thomas
-implementors based on reading the book published by Apple.  These
-decisions must not be construed in any way as deriving from Apple
-Computer Corporation or its employees.
+Thomas is NOT Dylan(TM).  We have not received approval for the use of the
+trademark, and we have not received a copy of a test suite other than the
+examples from the book itself.  We may, at some future date, pursue these
+issues with Apple.  The Thomas system was built with no direct input, aid,
+assistance or discussion with Apple.  All design and implementation
+decisions in Thomas reflect choices by the Thomas implementors based on
+reading the book published by Apple.  These decisions must not be
+construed in any way as deriving from Apple Computer Corporation or its
+employees.
 
                                 * * *
 
 The Thomas system is being distributed in a form compatible with three
-existing public implementations of Scheme.  Each has its own
-subdirectory (in ./kits) with a README file:
+existing public implementations of Scheme.  Each has its own subdirectory
+(in ./kits) with a README file:
 
-MIT -- MIT's CScheme implementation, available for Vax (Ultrix,
-       Berkeley Unix, and possibly VMS); Unix on the MIPS, 680x0,
-       Alpha, and HP Precision Architecture; and Intel 386/486 under
-       MS/DOS and Windows 3.0. In order to use Thomas in MIT CScheme,
-       you must have a working installation of MIT CScheme on your
-       system. The MIT CScheme system is available by ftp from
-       altdorf.ai.mit.edu.
+MIT -- MIT's CScheme implementation, available for Vax (Ultrix, Berkeley
+       Unix, and possibly VMS); Unix on the MIPS, 680x0, Alpha, and HP
+       Precision Architecture; and Intel 386/486 under MS/DOS and Windows
+       3.0. In order to use Thomas in MIT CScheme, you must have a working
+       installation of MIT CScheme on your system. The MIT CScheme system
+       is available by ftp from altdorf.ai.mit.edu.
 
-scc -- DEC's Scheme->C system, available for VAX/ULTRIX, DECstation,
-       SGI Iris, Amiga, Sun3, Sun4, DNx500, DN1000 386 (running SYS V
-       Unix), NeXT, HP9000/700 and Sony News 3200 systems.  This
-       subdirectory includes an object module that can be linked on a
-       DECStation to produce a running Scheme interpreter, as well as
-       the files needed to install Thomas in an existing Scheme->C
-       system on other machines.  Scheme->C (scc) is available by ftp
-       from gatekeeper.pa.dec.com.
+scc -- DEC's Scheme->C system, available for VAX/ULTRIX, DECstation, SGI
+       Iris, Amiga, Sun3, Sun4, DNx500, DN1000 386 (running SYS V Unix),
+       NeXT, HP9000/700 and Sony News 3200 systems.  This subdirectory
+       includes an object module that can be linked on a DECStation to
+       produce a running Scheme interpreter, as well as the files needed
+       to install Thomas in an existing Scheme->C system on other
+       machines.  Scheme->C (scc) is available by ftp from
+       gatekeeper.pa.dec.com.
 
-gambit -- Marc Feeley's Scheme system for (primarily) the Motorola
-       680x0 family of machines including the Macintosh.  You must
-       have a working installation of Gambit to use this version.
-       Gambit is available by ftp from trex.iro.umontreal.ca
+gambit -- Marc Feeley's Scheme system for (primarily) the Motorola 680x0
+       family of machines including the Macintosh.  You must have a
+       working installation of Gambit to use this version.  Gambit is
+       available by ftp from trex.iro.umontreal.ca
 
                                 * * *
 
-Brief description of the top-level directory of Thomas.  The files
-marked <*> are of interest primarily to people interested in porting
-or implementing Thomas.
+Brief description of the top-level directory of Thomas.
 
-DIFFERENCES -- Known differences between the language handled by
-       Thomas and the language as specified in "Dylan(TM) an
-       object-oriented dynamic language" by Apple Computer Eastern
-       Research and Technology, April 1992.
+RELEASE -- Release notes; what's changed in this release.
+
+DIFFERENCES -- Known differences between the language handled by Thomas and
+       the language as specified in "Dylan(TM) an object-oriented dynamic
+       language" by Apple Computer Eastern Research and Technology, April
+       1992.
 
 README -- This file.
 
-<*> dylan-examples.dyl -- Edited and commented examples from the
+kits/MIT -- Symbolic links to all files required to implement Thomas in MIT
+       CScheme.
+
+kits/gambit -- Symbolic links to all files required to implement Thomas in
+       Marc Feeley's Gambit system.
+
+kits/scc -- Symbolic links to all files required to implement Thomas in
+       Digital Equipment Corporation's Scheme->C system.
+
+There are also a number of files of interest primarily to people porting or
+implementing Thomas.
+
+dylan-examples.dyl -- Edited and commented examples from the
        Dylan(TM) book.
 
-<*> examples-from-book.text -- Source of examples from the Dylan(TM) book,
-       as extracted by Andrew Shalit of Apple Computer Eastern
+examples-from-book.text -- Source of examples from the Dylan(TM) book, as
+       extracted and edited by Andrew Shalit of Apple Computer Eastern
        Research and Technology.  This is the "raw" version from which
-       dylan-examples.dyl and full-test.scm are derived.  It contains
-       typos and unrunnable code.
+       dylan-examples.dyl was derived.
 
-<*> full-test.scm -- A Scheme program which can be used for regression
-       testing of Thomas.  This contains many examples from the
-       Dylan(TM) book, augmented by some support code, and with bugs
-       fixed.  This set of examples deliberately omits ones specified
-       to generate errors, and is intended to be implementation
-       independent.  Additional examples can be found in
-       examples-from-book.text, dylan-examples.dyl, and in some of the
-       kits/<name>/src/ files.
+full-test.scm -- A Scheme program which can be used for regression
+       testing of Thomas.  This program reads and executes the examples
+       given in dylan-examples.dyl.  Additional examples can be found in
+       examples-from-book.text, and in some of the kits/<name>/src/ files.
 
-kits -- subdirectory for all distributed implementations of Thomas.
-kits/MIT -- MIT's CScheme system.
-kits/gambit -- Marc Feeley's Gambit system.
-kits/scc -- Digital Equipment Corporation's Scheme->C system.
+portable -- A subdirectory containing code extracted from the MIT CScheme
+       runtime system and edited to make it portable (within limits as
+       explained at the start of each file) to other implementations of
+       Scheme.  The code in these files is required by the current
+       implementation of Thomas, and these sources are supplied to aid
+       people who wish to port Thomas to other Scheme systems.
 
-<*> portable -- A subdirectory containing code extracted from the MIT
-       CScheme runtime system and edited to make it portable (within
-       limits as explained at the start of each file) to other
-       implementations of Scheme.  The code in these files is required
-       by the current implementation of Thomas, and these sources are
-       supplied to aid people who wish to port Thomas to other Scheme
-       systems.
+src -- The source code for the Thomas system.  This contains all of the
+       code needed for the MIT CScheme version of Thomas.  Augmented by
+       the sources in portable and in the implementation-specific
+       subdirectory for a particular Scheme implementation it should be
+       sufficient to rebuild Thomas.
 
-<*> src -- The source code for the Thomas system.  This contains all
-       of the code needed for the MIT CScheme version of Thomas.
-       Augmented by the sources in portable and in the
-       implementation-specific subdirectory for a particular Scheme
-       implementation it should be sufficient to rebuild Thomas.
+$Id: README,v 1.5 1992/09/25 16:36:21 birkholz Exp $

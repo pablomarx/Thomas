@@ -1,17 +1,54 @@
-;;;; **** Example from pages 144-6.
+; -*- Scheme -*-
+;*              Copyright 1992 Digital Equipment Corporation
+;*                         All Rights Reserved
+;*
+;* Permission to use, copy, and modify this software and its documentation is
+;* hereby granted only under the following terms and conditions.  Both the
+;* above copyright notice and this permission notice must appear in all copies
+;* of the software, derivative works or modified versions, and any portions
+;* thereof, and both notices must appear in supporting documentation.
+;*
+;* Users of this software agree to the terms and conditions set forth herein,
+;* and hereby grant back to Digital a non-exclusive, unrestricted, royalty-free
+;* right and license under any changes, enhancements or extensions made to the
+;* core functions of the software, including but not limited to those affording
+;* compatibility with other hardware or software environments, but excluding
+;* applications which incorporate this software.  Users further agree to use
+;* their best efforts to return to Digital any such changes, enhancements or
+;* extensions that they make and inform Digital of noteworthy uses of this
+;* software.  Correspondence should be provided to Digital at:
+;* 
+;*			Director, Cambridge Research Lab
+;*			Digital Equipment Corp
+;*			One Kendall Square, Bldg 700
+;*			Cambridge MA 02139
+;* 
+;* This software may be distributed (but not offered for sale or transferred
+;* for compensation) to third parties, provided such third parties agree to
+;* abide by the terms and conditions of this notice.  
+;* 
+;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
+;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
+;* CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+;* DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+;* PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+;* SOFTWARE.
+
+; $Id: MIT_restart-example.dyl,v 1.1 1992/09/22 20:55:21 birkholz Exp $
+
+;;;; Example from pages 144-6.  (Punted initial example code.)
+;;;; Many changed were necessary.  So many that they aren't noted here.
 
 ;;; Classes such as <file-not-found> used in these examples are
 ;;; invented for the example and are not part of the specification
 ;;; This example shows minimal handling of a file-not-found error
 
-;;; **** Punted initial example code.  Just testing improved example with
-;;; reordered definitions below.
-
 ;;; This is the same example improved so the restart handler that
 ;;; reads another file can only be reached by a handler for the
 ;;; associated condition, useful if there are nested errors.
 
-;; **** Added SCHEME definition of operating-system-open.
 (define (operating-system-open filename)
   (call-with-current-continuation
    (lambda (continuation)
@@ -28,25 +65,15 @@
 ;;;Value: operating-system-open
 
 (define-class <file-not-found> (<error>)
-  (file-name init-keyword: file-name:))	; **** lose extra parens around slots
+  (file-name init-keyword: file-name:))
 ;;;Value: <file-not-found>
 
-;;; **** lose (define-method print... )
-
 (define-class <try-a-different-file> (<restart>)
-  (condition init-keyword: condition:	; **** lose extra parens around slots
-	     getter: restart-condition)	; **** getter:, not reader:
+  (condition init-keyword: condition:
+	     getter: restart-condition)
   (file-name init-keyword: file-name:))
 ;;;Value: <try-a-different-file>
 
-;;; **** Many things:
-;;; 1. Combine open and guts-of-open.
-;;; 2. Use scheme-procedure to reference operating-system-open.
-;;; 3. Punt (instance? result <stream>) clause -- there's no <stream>.
-;;; 4. Use 'file-not-found rather than +file-not-found-error-code+.
-;;; 5. Description: is never used, so format is OK.  (It ain't implemented.)
-;;; 6. (else: result) rather than dots.
-;;; 7. Get parens right!
 (define-method open (the-file)
   (bind ((result ((scheme-procedure 'operating-system-open) the-file)))
     (cond ((id? result 'file-not-found)
@@ -63,13 +90,11 @@
 	  (else: result))))
 ;;;Value: open
 
-;;; **** Include handler method in handler clause with <file-not-found>.
-;;; **** /dev/null probably exists.  my-emergency-backup-file probably doesn't.
 (handler-bind (<file-not-found>
 	       (method (condition next-handler)
 		 (signal (make <try-a-different-file>
 			       condition: condition
 			       file-name: "/dev/null"))))
   (open "file-that-doesnt-exist")
-  )					; **** lose dots
+  )
 ;;;Value: #[input-port 778 for file: #[pathname 779 "/dev/null"]]

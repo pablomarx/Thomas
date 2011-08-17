@@ -17,16 +17,16 @@
 ;* their best efforts to return to Digital any such changes, enhancements or
 ;* extensions that they make and inform Digital of noteworthy uses of this
 ;* software.  Correspondence should be provided to Digital at:
-;* 
+;*
 ;*                      Director, Cambridge Research Lab
 ;*                      Digital Equipment Corp
 ;*                      One Kendall Square, Bldg 700
 ;*                      Cambridge MA 02139
-;* 
+;*
 ;* This software may be distributed (but not offered for sale or transferred
 ;* for compensation) to third parties, provided such third parties agree to
 ;* abide by the terms and conditions of this notice.
-;* 
+;*
 ;* THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
 ;* WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
 ;* MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
@@ -36,7 +36,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: dylan-examples.dyl,v 1.13 1992/09/12 01:17:29 jmiller Exp $
+; $Id: dylan-examples.dyl,v 1.16 1992/09/23 04:43:53 birkholz Exp $
 
 ;;; This is a copy of examples-from-book.text modified to be runnable in
 ;;; the Thomas REP.  The expected return value is given after ";Value: ".
@@ -258,7 +258,7 @@ bar
 ;; Page 41
 
 (double 10)
-;error: unbound variable double.
+;error: unbound variable double
 
 (define-method double ((thing <number>))
   (+ thing thing))
@@ -364,9 +364,8 @@ bar
                   size: (point 30 50))
 ;Value: (3 8 (10 10) (30 50))
 
-;;; size: changed to position:
-(layout my-widget position: (query-user-for-size))
-;Value: (3 8 3 #f)
+(layout my-widget size: (query-user-for-size))
+;Value: (3 8 #f 3)
 
 
 ;; Page 45
@@ -435,7 +434,7 @@ bar
 ;(a: 2 b: 3 c: 4)
 ;2
 ;3
-;Value: #[undefined-value]
+;No value
 
 
 ;; Page 49
@@ -568,8 +567,8 @@ bar
 ;;; +
 (position my-displaced-view)
 ;Value: (displace-transform initial-position)
-;;; ??? Got (displace-transform ()) instead!!!
-;;; This is because of limitation (9) in DIFFERENCES.
+;;; Actually getting (displace-transform ()) instead because of limitation
+;;; (9) in DIFFERENCES.
 
 ;;; +
 (set! (position my-displaced-view) 'next-position)
@@ -655,7 +654,7 @@ foo
 (id? (setter element) %set-element)
 ;Value: #t
 
-;;; Just for laughs.  The next two should work.
+;;; The next two should also work.
 
 ;;; +
 (set! (element 'foo 'bar) 'baz)
@@ -736,7 +735,7 @@ foo
 ;Value: show-and-tell
 
 (show-and-tell "hello")
-;hello
+;"hello"
 ;Value: #t
 
 
@@ -744,7 +743,7 @@ foo
 
 ;;; +
 (define-method bonus-illuminated? (pinball post)
-  #T)
+  #t)
 ;Value: bonus-illuminated?
 
 ;;; +
@@ -773,7 +772,7 @@ foo
 
 ;;; +
 (define-method detect-gas? (nose)
-  #F)
+  #f)
 ;Value: detect-gas?
 
 ;;; +
@@ -846,17 +845,17 @@ foo
 ;;; +
 (babble 'steve)
 ;"Say, can you fix my VCR?"
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (babble 'jim)
 ;"That really is fascinating."
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (babble 'paul)
 ;"Don't quit your day job."
-;Value: #[undefined-value]
+;No value
 
 
 ;; Page 67
@@ -879,7 +878,9 @@ foo
 ;Value: "it's something computational"
 
 ;;; +
-(whatitis #F)
+(whatitis #f)
+;;; MIT-Scheme does not distinguish #f from (), so this actually looks like
+;;; the end of a list -- "it's something computational".
 ;Value: "Don't know what it is"
 
 
@@ -944,7 +945,7 @@ foo
 ;(2012 chicago)
 ;(2016 denver)
 ;(2020 san-francisco)
-;Value: #[undefined-value]
+;No value
 
 
 ;; Page 70
@@ -952,14 +953,14 @@ foo
 (begin
   (dotimes (i 6) (print "bang!"))
   (print "click!"))
-;bang!
-;bang!
-;bang!
-;bang!
-;band!
-;bang!
-;click!
-;Value: #[undefined-value]
+;"bang!"
+;"bang!"
+;"bang!"
+;"bang!"
+;"bang!"
+;"bang!"
+;"click!"
+;No value
 
 
 ;; Page 71
@@ -979,7 +980,7 @@ foo
 ;; Page 72
 
 +
-;Value: #[generic function ...]
+;Value: #[method ...]
 
 '+
 ;Value: +
@@ -1024,7 +1025,7 @@ math-functions
 ;; Page 79
 
 (method (num1 num2)
-        (+ num1 num2))
+  (+ num1 num2))
 ;Value: #[method ...]
 
 
@@ -1032,8 +1033,8 @@ math-functions
 
 ;;; +
 (define-class <person> (<object>)
-  name
-  age)
+  (name init-keyword: name:)
+  (age init-keyword: age:))
 ;Value: <person>
 
 ;;; +
@@ -1045,11 +1046,11 @@ math-functions
 ;Value: person-list
 
 ;;; Wrap this in a for-each that shows us the sorted list.
+;;; Put the test: keyword before the test argument.
 (for-each
      ((person
-       ;the second argument to SORT is the test function
        (sort person-list
-             (method (person1 person2)
+	     test: (method (person1 person2)
                      (< (age person1)
                         (age person2))))))
      ()
@@ -1058,7 +1059,7 @@ math-functions
 ;"Jill"
 ;"Peter"
 ;"Paul"
-;Value: #[undefined-value]
+;Value: #f
 
 (bind ((double (method (number)
                  (+ number number))))
@@ -1199,27 +1200,27 @@ print-twice
 ;;; +
 (show (make <window>) #\Return)
 ;(show <window> <character>)
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (show (make <window>) "Return")
 ;(show <window> <string>)
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (show (make <window>) (make <rectangle>))
 ;(show <window> <rectangle>)
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (show (make <file>) #\Return)
 ;(show <file> <character>)
-;Value: #[undefined-value]
+;No value
 
 ;;; +
 (show (make <file>) "Return")
 ;(show <file> <string>)
-;Value: #[undefined-value]
+;No value
 
 
 ;; Page 86
@@ -1245,8 +1246,6 @@ print-twice
 
 (define-method double ((thing (singleton 'cup)))
   'pint)
-;;; The book shows a method being returned, but the definition of define
-;;; says the variable name is returned.
 ;Value: double
 
 (double 'cup)
@@ -1582,9 +1581,9 @@ numbers
 (define x #(7 8 9))
 ;Value: x
 
-(set! (aref #(7 8 9) 1) 5)
-;;; The book shows #(7 5 9) being returned, but the definition of set! says
-;;; the new value is returned.
+;;; Using "x" rather than "#(7 8 9)"
+(set! (aref x 1) 5)
+;buggy example.  Should return 5
 ;Value: 5
 
 ;;; +
@@ -1597,8 +1596,7 @@ x
 
 ;;; Using "x" rather than "#(7 8 9)"
 ((setter aref) x 1 5)
-;;; The book shows #(7 5 9) being returned, but the definition of set! says
-;;; the new value is returned.
+;buggy example.  Should return 5
 ;Value: 5
 
 ;;; +
@@ -1759,17 +1757,17 @@ x
              (signal (make <simple-warning>
                            format-string: "simple warning"
                            format-arguments: '()))))
-;;;Value: "there was a warning"
+;Value: "there was a warning"
 
 ;;; +
 (handleit (method ()
              (check-type 'foo <string>)))
-;;;Value: "there was a type-error"
+;Value: "there was a type-error"
 
 ;;; +
 (handleit (method ()
             (error "simple error")))
-;;;Value: "there was an error"
+;Value: "there was an error"
 
 
 ;; Page 144-146
@@ -1831,22 +1829,10 @@ x
   (member? name #(michelle anne ann barbara roseanne susan)))
 ;Value: female?
 
-;;; +
-(define michelle 'michelle)
-;Value: michelle
-
-;;; +
-(define arnold 'arnold)
-;Value: arnold
-
-;;; +
-(define roseanne 'roseanne)
-;Value: roseanne
-
-(map female? (list michelle arnold roseanne))
+(map female? '(michelle arnold roseanne))
 ;Value: (#t #f #t)
 
-(map (complement female?) (list michelle arnold roseanne))
+(map (complement female?) '(michelle arnold roseanne))
 ;Value: (#f #t #f)
 
 

@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: class.scm,v 1.23 1992/09/09 22:58:39 jmiller Exp $
+; $Id: class.scm,v 1.24 1992/09/21 20:41:56 birkholz Exp $
 
 ;;;; Class, Instance, and Singleton data types.
 
@@ -90,8 +90,8 @@
      sealed?				; Has the class been sealed?
      read-only?
      abstract?				; Is the class abstract?
-     generality				; Ranking in topological sort.
-     generality-marker			; An object unique to a particular sort.
+     specificity			; Longest path from root.
+     specificity-token			; Unique to a specificity labeling.
      )))
 (define class? (record-predicate class-type))
 (define make-class (record-constructor class-type))
@@ -106,8 +106,8 @@
 (define class.sealed? (record-accessor class-type 'sealed?))
 (define class.read-only? (record-accessor class-type 'read-only?))
 (define class.abstract? (record-accessor class-type 'abstract?))
-(define class.generality (record-accessor class-type 'generality))
-(define class.generality-marker (record-accessor class-type 'generality-marker))
+(define class.specificity (record-accessor class-type 'specificity))
+(define class.specificity-token (record-accessor class-type 'specificity-token))
 (define set-class.instances!
   (record-updater class-type 'instances))
 (define set-class.subclasses!
@@ -126,9 +126,9 @@
   (record-updater class-type 'read-only?))
 (define set-class.abstract?!
   (record-updater class-type 'abstract?))
-(define set-class.generality! (record-updater class-type 'generality))
-(define set-class.generality-marker!
-  (record-updater class-type 'generality-marker))
+(define set-class.specificity! (record-updater class-type 'specificity))
+(define set-class.specificity-token!
+  (record-updater class-type 'specificity-token))
 
 ;;; Scheme structure for representing Dylan singletons
 
@@ -315,22 +315,23 @@
 	      (+ 1 class-data-index)
 	      (+ 1 instance-data-index)))))
 
-(define (recompute-class-generalities)
-  (let ((marker (cons 'GENERALITY 'MARKER)))
+(define (recompute-class-specificities!)
+  (let ((new-token (cons 'SPECIFICITY 'TOKEN)))
 
-    (define (topological-sort rank class)
-      ;; Returns current rank -- the highest rank assigned so far.
-      (map-over-population!
-       (class.subclasses class)
-       (lambda (subclass)
-	 (if (not (eq? marker (class.generality-marker subclass)))
-	     (set! rank (topological-sort rank subclass)))))
-      (set! rank (+ 1 rank))
-      (set-class.generality-marker! class marker)
-      (set-class.generality! class rank)
-      rank)
+    (define (level-me me level)
+      (if (eq? new-token (class.specificity-token me))
+	  (if (> level (class.specificity me))
+	      (set-class.specificity! me level))
+	  (begin
+	    (set-class.specificity-token! me new-token)
+	    (set-class.specificity! me level)))
+      (let ((sublevel (+ 1 level)))
+	(map-over-population!
+	 (class.subclasses me)
+	 (lambda (subclass)
+	   (level-me subclass sublevel)))))
 
-    (topological-sort 0 <object>)))
+    (level-me <object> 0)))
 
 (define (get-initial-slot-value slot)
   (cond ((slot.init-function slot) => (lambda (f) (dylan-call f)))
@@ -378,8 +379,8 @@
 	   #F				; sealed?
 	   #F				; read-only?
 	   #F				; abstract?
-	   #F				; generality
-	   #F				; generality-marker
+	   #F				; specificity
+	   #F				; specificity-token
 	   ))
 	 (combined-slots
 	  (combine-slots
@@ -408,7 +409,7 @@
      (lambda (parent-class)
        (add-to-population! (class.subclasses parent-class) the-class))
      superclasses)
-    (if (not top?) (recompute-class-generalities))
+    (if (not top?) (recompute-class-specificities!))
     the-class))
 
 (set! Subclass?

@@ -1,6 +1,6 @@
 ; -*-Scheme-*-
 ;
-; $Header: poplat.scm,v 14.2 88/06/13 11:49:48 GMT cph Rel $
+; $Id: gambit_poplat.scm,v 1.1 1992/09/22 20:56:57 birkholz Exp $
 ;
 ; Copyright (c) 1988 Massachusetts Institute of Technology
 ;
@@ -9,23 +9,23 @@
 ; Computer Science.  Permission to copy this software, to redistribute
 ; it, and to use it for any purpose is granted, subject to the following
 ; restrictions and understandings.
-; 
+;
 ; 1. Any copy made of this software must include this copyright notice
 ; in full.
-; 
+;
 ; 2. Users of this software agree to make their best efforts (a) to
 ; return to the MIT Scheme project any improvements or extensions that
 ; they make, so that these may be included in future releases; and (b)
 ; to inform MIT of noteworthy uses of this software.
-; 
+;
 ; 3. All materials developed as a consequence of the use of this
 ; software shall duly acknowledge such use, in accordance with the usual
 ; standards of acknowledging credit in academic research.
-; 
+;
 ; 4. MIT has made no warrantee or representation that the operation of
 ; this software will be error-free, and MIT is under no obligation to
 ; provide any services, by way of maintenance, update, or otherwise.
-; 
+;
 ; 5. In conjunction with products arising from the use of this material,
 ; there shall be no use of the name of the Massachusetts Institute of
 ; Technology nor of any adaptation thereof in any advertising,
@@ -34,12 +34,16 @@
 
 ; This file requires the following non-IEEE primitives:
 
-; ##weak-cons, ##weak-car, ##weak-cdr, ##weak-set-cdr! for manipulating
-; "weak-cons cells," whose cdr is normal but whose car turns to #F
-; during a garbage collection if no non-weak references are found to
-; the object in the car.
+; ##weak-pair?, ##weak-cons, ##weak-car, ##weak-cdr, ##weak-set-cdr! for
+; manipulating "weak-cons cells," whose cdr is normal but whose car
+; turns to #F during a garbage collection if no non-weak references
+; are found to the object in the car.
 
-;;; Populations
+; ##gc-finalization is bound to a procedure (in hash.scm) that calls
+; gc-all-populations! after each garbage collection is complete and before
+; Scheme resumes execution.
+
+;;;; Populations
 
 ;;; A population is a collection of objects.  This collection has the
 ;;; property that if one of the objects in the collection is reclaimed
@@ -51,8 +55,11 @@
 (define bogus-false '(BOGUS-FALSE))
 (define population-tag '(POPULATION))
 
-(define (canonicalize object) (if (eq? object #f) bogus-false object))
-(define (uncanonicalize object) (if (eq? object bogus-false) #f object))
+(define (canonicalize object)
+  (if (eq? object #f) bogus-false object))
+
+(define (uncanonicalize object)
+  (if (eq? object bogus-false) #f object))
 
 (define (gc-population! population)
   (let loop ((l1 population) (l2 (##weak-cdr population)))
@@ -121,7 +128,7 @@
 	   (##weak-set-cdr! l1 (##weak-cdr l2))
 	   (loop l1 (##weak-cdr l1)))
 	  (else
-           (procedure (uncanonicalize (##weak-car l2)))
+	   (procedure (uncanonicalize (##weak-car l2)))
 	   (loop l2 (##weak-cdr l2))))))
 
 (define (for-all-inhabitants? population predicate)

@@ -1,6 +1,7 @@
 ; -*-Scheme-*-
 ;
-; $Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
+; $Id: gambit_hash.scm,v 1.2 1992/09/23 15:24:00 birkholz Exp $
+; $MIT-Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
 ;
 ; Copyright (c) 1988, 1989 Massachusetts Institute of Technology
 ;
@@ -32,7 +33,6 @@
 ; promotional, or sales literature without prior written consent from
 ; MIT in each case.
 
-
 ; This file requires the following non-IEEE primitives:
 
 ; ##weak-cons, ##weak-car, ##weak-cdr, ##weak-set-cdr! for manipulating
@@ -43,7 +43,7 @@
 ; ##gc-finalize registers a thunk (procedure of no arguments) to be called
 ; after each garbage collection is complete and before Scheme resumes
 ; running.
-
+
 ;;;; One Dimensional Property Tables
 
 (define (initialize-oned-table-package!)
@@ -143,8 +143,8 @@
 		  (loop previous next result))
 		(loop alist
 		      next
-		      (cons (##weak-cons (and (not (eq? key false-key)) key)
-					 (##weak-cdr entry))
+		      (cons (cons (and (not (eq? key false-key)) key)
+				  (##weak-cdr entry))
 			    result))))))))
 
 (define (oned-table/for-each proc table)

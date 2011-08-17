@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: runtime-internal.scm,v 1.8 1992/09/01 19:35:06 jmiller Exp $
+; $Id: runtime-internal.scm,v 1.9 1992/09/20 08:20:20 birkholz Exp $
 
 ;;;; This file contains the functions that are referenced only
 ;;;; directly by the output of the Dylan to Scheme compiler, rather
@@ -89,10 +89,12 @@
   dynamic-wind)
 
 (define (dylan::type-check value class) ; Used for BIND
-  (let ((type-of-object (get-type value)))
-    (if (not (subclass? type-of-object class))
-	(dylan-call dylan:error
-		    "BINDing-time restriction violation" class value))))
+;  (let ((type-of-object (get-type value)))
+;    (if (not (subclass? type-of-object class))
+;	(dylan-call dylan:error
+;		    "BINDing-time restriction violation" class value)))
+  ;; Should signal a <type-error>!
+  (dylan-call dylan:check-type value class))
 
 (define dylan::list list)		; BIND
 (define dylan::cons cons)		; BIND

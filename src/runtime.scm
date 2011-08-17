@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: runtime.scm,v 1.20 1992/09/09 23:35:20 jmiller Exp $
+; $Id: runtime.scm,v 1.22 1992/09/18 23:56:44 birkholz Exp $
 
 (for-each dylan::load
 	  '("class"			; Dylan Class data type.
@@ -51,7 +51,8 @@
 	    "runtime-bitstrings"	; Integers as bitstrings
 	    "runtime-collections"	; Collections, sequences, ...
 	    "runtime-collections-iterate" ; Iteration + Collection Keys
-	    "runtime-collections-generic" ; Collection generic functions 
+	    "runtime-collections-generic1" ; Collection generic functions 
+	    "runtime-collections-generic2" ; More generic collection operations.
 	    "runtime-collections-array"	; Arrays
 	    "runtime-collections-deque"	; Deques
 	    "runtime-collections-list"	; Lists

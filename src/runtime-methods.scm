@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: runtime-methods.scm,v 1.22 1992/09/08 11:39:10 birkholz Exp $
+; $Id: runtime-methods.scm,v 1.25 1992/09/19 06:54:56 birkholz Exp $
 
 ;;;; Methods used in the Dylan environment
 
@@ -638,6 +638,12 @@
        (else #F)))))
 
 (define dylan:apply
+  (dylan::generic-fn 'apply (make-param-list `((FN ,<function>)) #F #T #F) #F))
+
+(add-method
+ dylan:apply
+ (dylan::dylan-callable->method
+  (make-param-list `((FN ,<function>)) #F #T #F)
   (lambda (multiple-values next-method fn . args)
     (dylan-full-apply fn multiple-values next-method
 		      (split-last
@@ -647,7 +653,7 @@
 				 (if (null? end)
 				     '()
 				     (iterate->list (lambda (x) x)
-						    (car end)))))))))
+						    (car end))))))))))
 
 (define dylan:as
   (dylan::generic-fn 'as

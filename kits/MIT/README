@@ -1,52 +1,47 @@
+-*-Indented-Text-*-
+
 This is the directory for the MIT CScheme implementation of Thomas, a
 compiler written at Digital Equipment Corporation's Cambridge Research
 Laboratory.  Thomas compiles a language compatible with the language
-described in the book "Dylan(TM) an object-oriented dynamic language"
-by Apple Computer Eastern Research and Technology, April 1992; the
-file DIFFERENCES lists the known differences.
+described in the book "Dylan(TM) an object-oriented dynamic language" by
+Apple Computer Eastern Research and Technology, April 1992; the file
+DIFFERENCES lists the known differences.
 
-We have made every effort to minimize the differences between Thomas
-and Dylan(TM), and to remove bugs, but help from others would be
-greatly appreciated.  The original development team consisted of:
+We have made every effort to minimize the differences between Thomas and
+Dylan(TM), and to remove bugs, but help from others would be greatly
+appreciated.  The original development team consisted of:
 
           Matt Birkholz (Birkholz@crl.dec.com)
           Jim Miller (JMiller@crl.dec.com)
           Ron Weiss (RWeiss@crl.dec.com)
 
 In addition, Joel Bartlett (Bartlett@wrl.dec.com), Marc Feeley
-(Feeley@iro.umontreal.ca), Guillermo Rozas (Jinx@zurich.ai.mit.edu)
-and Ralph Swick (Swick@crl.dec.com) contributed time and energy to the
-initial release.
+(Feeley@iro.umontreal.ca), Guillermo Rozas (Jinx@zurich.ai.mit.edu) and
+Ralph Swick (Swick@crl.dec.com) contributed time and energy to the initial
+release.
 
                                 * * *
 
                              INSTALLATION
 
-To install this version of Thomas you must already have a working
-version of MIT's CScheme system installed.  It may be helpful to know
-where CScheme is storing its library files (typically either in the
-directory /usr/local/lib/mit-scheme or will be specified by an
-environment variable named MITSCHEME_LIBRARY_PATH).
+To install this version of Thomas you must already have MIT's CScheme 7.2
+or later.  If you have an earlier version of CScheme, some minor
+modifications will have to be made.  It may be helpful to know where
+CScheme is storing its library files (typically either in the directory
+/usr/local/lib/mit-scheme or in a directory specified by the environment
+variable MITSCHEME_LIBRARY_PATH).  CScheme can be obtained by anonymous
+FTP from altdorf.ai.mit.edu.
 
-These instructions assume you already know how to use MIT Scheme.
+The implementation of Thomas is largely in IEEE standard Scheme and resides
+in ../src/.  Some generic utilities are available as IEEE standard packages
+independent of Thomas and reside in ../portable/.  A small amount of code
+is CScheme-specific and resides in this directory.  The src/ subdirectory of
+this directory contains symbolic links to all the various pieces needed to
+produce a working Thomas in CScheme.
 
-1) While Thomas can run fully interpreted, it will be considerably
-   faster if you first generate ".bin" files.  To make these files,
-   you will need to load a band that has "SF" included in it;
-   typically this can be done by adding "-compiler" to the command
-   line arguments you use to invoke Scheme.  If that doesn't work,
-   check with the person who installed Scheme or read the Scheme
-   installation instructions.  With Scheme/SF loaded and with your
-   working directory set to the subdirectory "src" under this
-   directory, evaluate the Scheme expression (load "thomas.sf").  This
-   should read in all of the .scm files and convert them to .bin
-   files.
+The rest of these instructions assume you already know how to use CScheme.
 
-   You may also wish to compile some or all of the files.  This can be
-   done, after generating the .bin files, by evaluating the Scheme
-   expression (compile-directory ".").
-
-2) There are three ways to use Thomas: as a compiler, as a runtime
+1) There are three ways to use Thomas: as a compiler, as a runtime
    execution environment, or as an interactive environment.  Each is
    described below.  In general, you will probably find it easiest to
    load up the appropriate file (from the "src" subdirectory of this
@@ -59,29 +54,46 @@ These instructions assume you already know how to use MIT Scheme.
 
    a) Compiler: Load the file "load-compiler".  This provides two
       main procedures:
-        (THOMAS <file-name> . expressions) compiles the Thomas
-          EXPRESSIONS and puts the resulting Scheme expression into
-          <FILE-NAME>.
 
-        (THOMAS->SCHEME input output) compiles the INPUT file
-          consisting of Thomas expressions, generating a single Scheme
-          expression into the OUTPUT file.
+        (THOMAS <file-name> . expressions) compiles the Thomas EXPRESSIONS
+      and puts the resulting Scheme expression into <FILE-NAME>.
 
-   b) Runtime Execution: Load the file "load-runtime".  This
-      provides a Scheme environment into which the output of the
-      Thomas compiler can be loaded for execution.
+        (THOMAS->SCHEME input output) compiles the INPUT file consisting of
+      Thomas expressions, generating a single Scheme expression into the
+      OUTPUT file.
 
-   c) Interactive Environment: Load the file "load-thomas".  This
-      gives you two procedures:
-        (THOMAS-REP) creates a read-eval-print (REP) loop which works
-      like an ordinary MIT Scheme REP loop, but uses a Thomas
-      evaluator instead of a Scheme evaluator.  Errors that are not
-      trapped by your Thomas code will invoke an inferior Scheme (NOT
-      Thomas) REP loop.
-         (EMPTY-THOMAS-ENVIRONMENT!) clears out the environment used by
-      (THOMAS-REP) for storing the values of Thomas variables.  This
-      is the only way (short of restarting Scheme) to clean out the
-      Thomas environment if things become messed up.
+   b) Runtime Execution: Load the file "load-runtime".  This provides a
+      Scheme environment into which the output of the Thomas compiler can
+      be loaded for execution.
+
+   c) Interactive Environment: Load the file "load-thomas".  This gives you
+      two procedures:
+
+        (THOMAS-REP) starts a read-eval-print (REP) loop which works like
+      an ordinary CScheme REP loop, but uses a Thomas evaluator instead
+      of a Scheme evaluator.  Errors that are not trapped by your Thomas
+      code will invoke another Scheme (NOT Thomas) REP loop.
+
+         (EMPTY-THOMAS-ENVIRONMENT!) forgets about previously defined
+      module variables created by (THOMAS-REP).  This is the only way
+      (short of restarting Scheme) to clean out the Thomas environment if
+      things become messed up.  In CScheme, we actually create a new
+      environment, discarding the old environment and any old variables.
+
+2) While Thomas can run fully interpreted, it will be considerably faster
+   if you first generate ".bin" files.  To make these files, you will need
+   to load a band that has "SF" included in it; typically this can be done
+   by adding "-compiler" to the command line arguments you use to invoke
+   Scheme.  If that doesn't work, check with the person who installed
+   Scheme or read the Scheme installation instructions.  With Scheme/SF
+   loaded and with your working directory set to the subdirectory "src"
+   under this directory, evaluate the Scheme expression (load
+   "thomas.sf").  This should read in all of the .scm files and convert
+   them to .bin files.
+
+   You may also wish to compile some or all of the files.  This can be
+   done, after generating the .bin files, by evaluating the Scheme
+   expression (compile-directory ".").
 
 Here is a sample session with Thomas:
 
@@ -123,8 +135,7 @@ Here is a sample session with Thomas:
 
                          Language Extensions
 
-The MIT Scheme version of Thomas includes three additional predefined
-methods:
+The CScheme version of Thomas includes three additional predefined methods:
      (PP <object>) calls the Scheme pretty printer.
      (SCHEME-VARIABLE <symbol>) returns the value of a Scheme variable
        that is visible from the normal user interaction environment.
@@ -141,3 +152,4 @@ methods:
        but will issue an error if the number supplied doesn't match
        the number expected by the Scheme procedure.
 
+$Id: MIT_README,v 1.2 1992/09/23 16:06:25 birkholz Exp $

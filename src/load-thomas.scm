@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: load-thomas.scm,v 1.3 1992/09/10 01:11:19 jmiller Exp $
+; $Id: load-thomas.scm,v 1.3 1992/09/10 01:11:19 jmiller Exp birkholz $
 
 (load "implementation-specific")
 (dylan::load "common")

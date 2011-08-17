@@ -1,3 +1,5 @@
+-*-Indented-Text-*-
+
                        Known Problems in Thomas
                    (and a comparison to Dylan(TM))
                    -------------------------------
@@ -42,28 +44,26 @@ II. Known differences from the book "Dylan(TM) an object-oriented
    understand the full intent of this operation in a variety of
    circumstances.
 
-6) FUNCTION-ARGUMENTS doesn't work on the predefined functions, but it
-   does work on generic functions and methods.  There are only four
-   predefined functions (apply, aref, dimensions, and singelton).
-   There is reason to believe that this is simply a typographical
-   error in the Dylan(TM) book and we may change Thomas in a future
-   release to convert these functions into generic functions.
-
-7) Thomas doesn't do collection alignment for tables (as specified on
+6) Thomas doesn't do collection alignment for tables (as specified on
    pages 128 and 129); other collection types should be OK.  Fixing
    this would be a very nice contribution to the Thomas implementation
    (hint, hint).
 
-8) Thomas doesn't do (SETTER DIRECT-SUPERCLASSES).  This is somewhere
+7) Thomas doesn't do (SETTER DIRECT-SUPERCLASSES).  This is somewhere
    between an oversight (we honestly didn't notice it and it isn't in
    the index) and a pain to write.  Again, help would be appreciated.
 
-9) Thomas doesn't do virtual slots in a way that supports their use as
+8) Thomas doesn't do virtual slots in a way that supports their use as
    "filtered slots" as described on pages 58 and 59.  We find the
-   description confusing, and require implementors to allocate a
+   description confusing, and require implementors to allocate an
    object of the supertype to store the "hidden" slot value rather
    than relying on NEXT-METHOD to find the hidden slot in the object
    itself.
+
+9) Some implementations of Scheme do not recognize the same set of literal
+   character names as specified in the book.  IEEE Scheme requires the
+   character literals #\space and #\newline.  Dylan also specifies
+   #\rubout, #\page, #\tab, #\backspace, #\return, and #\linefeed.
 
 III. Additions to the Thomas language
 
@@ -72,8 +72,10 @@ Dylan(TM):
 
     (display <object>)    derived from Scheme's DISPLAY
     (newline)             derived from Scheme'S NEWLINE
-    (write-line <object>) WRITE <object>, the NEWLINE
     (print <object>)      same as write-line
+    (write-line <object>) NEWLINE, then WRITE <object>
 
 Some implementations add additional methods or generic functions.
 These are documented in the file kits/<implementation>/README.
+
+$Id: DIFFERENCES,v 1.4 1992/09/25 16:42:12 birkholz Exp $

@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: support.scm,v 1.20 1992/09/08 11:43:43 birkholz Exp $
+; $Id: support.scm,v 1.22 1992/09/20 17:43:11 birkholz Exp $
 
 ;;;; General Supporting Procedures
 
@@ -161,8 +161,8 @@
 	   (error "incorrect keyword format" arglist allowed))
 	  ((not (or (eq? allowed #T)
 		    (memq (car args) allowed)))
-	   (error "keyword not allowed"
-		  arglist (if (eq? allowed #T) 'ANY allowed)))
+	   (error "illegal keyword argument" (car args)
+		  (if (eq? allowed #T) 'ANY allowed)))
 	  (else (loop (cddr args))))))
 
 ;;;; General utilities

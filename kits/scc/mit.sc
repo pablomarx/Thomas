@@ -1,4 +1,5 @@
 ;;; Additions from MIT C-Scheme.
+; $Id: scc_mit.sc,v 1.3 1992/09/23 15:06:35 birkholz Exp $
 
 (module mit)
 
@@ -10,4 +11,3 @@
 (include "hash.sc")
 (include "record.sc")
 (include "msort.sc")
-

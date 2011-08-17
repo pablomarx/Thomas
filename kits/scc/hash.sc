@@ -1,6 +1,7 @@
-;#| -*-Scheme-*-
+; -*-Scheme-*-
 ;
-; $Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
+; $Id: scc_hash.sc,v 1.2 1992/09/23 15:22:43 birkholz Exp $
+; $MIT-Header: prop1d.scm,v 14.4 89/09/15 17:16:35 GMT jinx Exp $
 ;
 ; Copyright (c) 1988, 1989 Massachusetts Institute of Technology
 ;
@@ -30,10 +31,20 @@
 ; there shall be no use of the name of the Massachusetts Institute of
 ; Technology nor of any adaptation thereof in any advertising,
 ; promotional, or sales literature without prior written consent from
-; MIT in each case. |#
+; MIT in each case.
 
+; This file requires the following non-IEEE primitives:
+
+; weak-cons, weak-car, weak-cdr, set-weak-cdr! for manipulating
+; "weak-cons cells," whose cdr is normal but whose car turns to #F
+; during a garbage collection if no non-weak references are found to
+; the object in the car.
+
+; after-gc registers a thunk (procedure of no arguments) to be called
+; after each garbage collection is complete and before Scheme resumes
+; running.
+
 ;;;; One Dimensional Property Tables
-;;; package: (runtime 1d-property)
 
 (define (initialize-oned-table-package!)
   (set! population-of-oned-tables (make-population))

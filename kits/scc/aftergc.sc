@@ -1,7 +1,8 @@
 ;;; Scheme->C
 ;;;
-;;; An orderly extension to AFTER-COLLECT to allows a number of modules to
+;;; An orderly extension to AFTER-COLLECT to allow a number of modules to
 ;;; add and delete a cleanup procedure.
+; $Id: scc_aftergc.sc,v 1.2 1992/09/23 15:11:22 birkholz Exp $
 
 (module aftergc (top-level after-gc))
 

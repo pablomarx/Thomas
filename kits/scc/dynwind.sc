@@ -1,5 +1,7 @@
 ; "dynwind.scm", wind-unwind-protect for Scheme
 ; Copyright (c) 1992, Aubrey Jaffer
+; Modified for Scheme->C by Joel Bartlett
+; $Id: scc_dynwind.sc,v 1.2 1992/09/23 15:12:31 birkholz Exp $
 
 ;This facility is a generalization of Common Lisp `unwind-protect',
 ;designed to take into account the fact that continuations produced by

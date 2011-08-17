@@ -1,21 +1,7 @@
-Replied: Thu, 20 Aug 92 17:03:46 -0400
-Replied: "alms@cambridge.apple.com "
-Date: Thu, 20 Aug 1992 16:46:02 -0500
-To: JMiller
-From: alms@cambridge.apple.com
-Subject: Re: Typo in example, page 33
-Cc: RWeiss, Birkholz
+-*-Indented-Text-*-
 
-> The bind example on the top of the page has misbalanced parens.
-> 
-> I'm retyping all of these !@%#$%$##@$ examples.  Do you have them
-> on-line?
-
-Here you go.  This is hot off the presses, so there are probably
-ommissions and typos.  I'd appreciate it if you point them out to
-me :-)
-
-   -Andrew
+This file contains the examples, taken directly from the Dylan manual.
+This file is not in an executable format.
 
 
 Page 27
@@ -486,7 +472,7 @@ Page 67
 
    (case (career-choice student)
       ((art music drama)
-       (print "Don't quit your day job.")
+       (print "Don't quit your day job."))
       ((literature history linguistics)
        (print "That really is fascinating."))
       ((science math engineering)
@@ -652,7 +638,7 @@ Page 81
                               guess 
                               (sqrt1 (improve guess))))
                        (close? (guess)
-                          (< (abs (-  (* guess guess) x)) .0001))
+                          (< (abs (- (* guess guess) x)) .0001))
                        (improve (guess)
                           (/ (+ guess (/ x guess)) 2)))
                (sqrt1 1)))
@@ -731,7 +717,7 @@ Page 97
 
    ? (define-method double ((thing (singleton 'cup)))
        'pint)
-   {a method on double}
+   double
    ? (double 'cup)
    pint
    ? (double 10)
@@ -839,7 +825,7 @@ Page 104
 
 ? (define x (list 'a 'b 'c 'd 'e 'f))
 x
-? (fill! x 3 :start 2)
+? (fill! x 3 start: 2)
 (a b 3 3 3 3)
 
 Page 105
@@ -926,7 +912,7 @@ Page 108
 
 Page 108
 
-   ? (concatenate-as <string> '(#\n #\o #\n) '(#\f #\a #t))
+   ? (concatenate-as <string> '(#\n #\o #\n) '(#\f #\a #\t))
    "nonfat"
    ? (concatenate-as <vector> '(0 1 2) '(3 4 5) '(6 7 8))
    #(0 1 2 3 4 5 6 7 8)
@@ -993,9 +979,9 @@ Page 113
 Page 113
 
    ? (set! (aref #(7 8 9) 1) 5)
-   #(7 5 9)
+   #(7 5 9)                        ;buggy example.  Should return 5
    ? ((setter aref) #(7 8 9) 1 5)
-   #(7 5 9)
+   #(7 5 9)                        ;buggy example.  Should return 5
 
 Page 113
 
@@ -1311,7 +1297,8 @@ Page 157
    sum
    ? (define-method square ((x <number>)) (* x x))
    square
-   ? (define-method square-all ((coords <sequence>))        (map square coords)
+   ? (define-method square-all ((coords <sequence>))
+       (map square coords))
    square-all
    ? (define distance (compose sqrt sum square-all))
    distance
@@ -1320,9 +1307,9 @@ Page 157
 
 Page 157
 
-   ? (map female? (list michelle arnold roseanne))
+   ? (map female? '(michelle arnold roseanne))
    (#t #f #t)
-   ? (map (complement female?) (list michelle arnold roseanne))
+   ? (map (complement female?) '(michelle arnold roseanne))
    (#f #t #f)
 
 Page 158
@@ -1344,3 +1331,4 @@ Page 159
    ? ((always #t) #f #f)
    #t
 
+$Id: examples-from-book.text,v 1.3 1992/09/25 13:47:57 birkholz Exp $

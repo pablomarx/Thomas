@@ -35,7 +35,7 @@
 ;* ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ;* SOFTWARE.
 
-; $Id: generic.scm,v 1.29 1992/09/10 17:35:44 birkholz Exp $
+; $Id: generic.scm,v 1.30 1992/09/21 21:27:28 birkholz Exp $
 
 ;;;;  Generic Operation Dispatch Mechanism
 
@@ -268,17 +268,17 @@
   (if (OneD-table/get *generic-function-data* obj #F) #T #F))
 
 (define (dylan::create-generic-function name nrequired keys rest?)
-  (letrec ((the-data (make-generic-function-data
-		      name
-		      (guarantee-integer nrequired)
-		      (guarantee-keys keys)
-		      (guarantee-boolean rest?)
-		      '() #F))
-	   (the-function (lambda args
-			   (generic-dispatch (car args) (cddr args)
-					     the-function the-data))))
-    (OneD-table/put! *generic-function-data* the-function the-data)
-    the-function))
+  (letrec ((data
+	    (make-generic-function-data name
+					(guarantee-integer nrequired)
+					(guarantee-keys keys)
+					(guarantee-boolean rest?)
+					'() #F))
+	   (generic-function
+	    (lambda args
+	      (generic-dispatch (car args) (cddr args) generic-function data))))
+    (OneD-table/put! *generic-function-data* generic-function data)
+    generic-function))
 
 ;;;; Generic Dispatch
 
@@ -348,76 +348,88 @@
 	      (any-!key? (dylan::keyword-validate #T non-req-args #T))
 	      (else (dylan::keyword-validate #T non-req-args keywords))))))
 
-;;;; Finding, ranking, sorting applicable methods.
+;;;; Finding and sorting applicable methods.
 
 (define (sorted-applicable-methods methods arguments)
-  (map cdr				; Strip rankings.
-       (sort (find-applicable-method-rankings methods arguments)
-	     (lambda (ranking/method-1 ranking/method-2)
-	       ;; Rankings are handled left-to-right through the list.
-	       (let loop ((ranking-1 (car ranking/method-1))
-			  (ranking-2 (car ranking/method-2)))
-		 (cond ((null? ranking-1) #T)
-		       ;; MIT-Scheme bogosity forces method-applicable?
-		       ;; to return #T rather than '()!!!
-		       ((eq? #T ranking-1) #T)
-		       ((< (car ranking-1) (car ranking-2)) #T)
-		       ((> (car ranking-1) (car ranking-2)) #F)
-		       (else (loop (cdr ranking-1) (cdr ranking-2)))))))))
+  (map cdr				; Strip specificities.
+       (sort (find-applicable-method-specificities methods arguments)
+	     (lambda (specificities/method-1 specificities/method-2)
+	       ;; Specificities are handled left-to-right through the list.
+	       (let loop ((specificities-1 (car specificities/method-1))
+			  (specificities-2 (car specificities/method-2)))
+		 (if (and (pair? specificities-1)
+			  (pair? specificities-2))
+		     (let ((specificity-1 (car specificities-1))
+			   (specificity-2 (car specificities-2)))
+		       (cond ((eq? specificity-1 specificity-2)
+			      (loop (cdr specificities-1)
+				    (cdr specificities-2)))
+			     ((eq? #T specificity-1) #T)
+			     ((eq? #T specificity-2) #F)
+			     ((> specificity-1 specificity-2) #T)
+			     ((< specificity-1 specificity-2) #F)
+			     (else
+			      (loop (cdr specificities-1)
+				    (cdr specificities-2)))))
+		     #T))))))
 
-(define (find-applicable-method-rankings methods arguments)
-  ;; Returns a list of (ranking . method) for each applicable method in
-  ;; `methods'.  `ranking' is a list containing the generality ranking of
-  ;; each specializer of `method'.  (Singletons are given rank 0 [least
-  ;; general].) These rankings are typically used to sort the applicable
-  ;; methods.
-  (let loop ((ranking/method-pairs '())
+(define (find-applicable-method-specificities methods arguments)
+  ;; Returns a list of (specificities . method) for each applicable method
+  ;; in `methods'.  `specificities' is a list containing the specificity of
+  ;; each specializer of the method.  If there are no required arguments,
+  ;; `specificities' is always the empty list.  If there are no applicable
+  ;; methods, the return value is an empty list.
+  (let loop ((specificities/method-pairs '())
 	     (methods methods))
     (if (not (pair? methods))
-	ranking/method-pairs
+	specificities/method-pairs
 	(let ((method (car methods)))
-	  (let ((ranking (method-applicable? method arguments)))
-	    (loop (if ranking
-		      (cons (cons ranking method) ranking/method-pairs)
-		      ranking/method-pairs)
+	  (let ((specificities (method-applicable? method arguments)))
+	    (loop (cond ((eq? #F specificities)
+			 specificities/method-pairs)
+			((eq? #T specificities)
+			 (cons (cons '() method) specificities/method-pairs))
+			(else (cons (cons specificities method)
+				    specificities/method-pairs)))
 		  (cdr methods)))))))
 
 (define (method-applicable? method arguments)
   ;; Returns #F if `method' shouldn't be applied to `arguments'.  Else,
-  ;; returns a generality ranking for the match.  This ranking is a list of
-  ;; generality rankings computed by match-specializer? applied to each
-  ;; required argument and its corresponding specializer.
+  ;; returns a list of the specificities of the specializers involved in
+  ;; the match.  If this list would be empty because there are no required
+  ;; parameters, return #T instead.
   (let loop ((remaining-arguments arguments)
 	     (remaining-specializers (method.specializers method))
-	     (ranking '()))
+	     (specificities '()))
     (if (pair? remaining-specializers)
 	(if (not (pair? remaining-arguments))
 	    (dylan-call dylan:error
 			"method-applicable? -- too few arguments"
 			arguments method)
-	    (let ((rank (match-specializer? (car remaining-arguments)
-					    (car remaining-specializers))))
-	      (if rank
+	    (let ((specificity
+		   (match-specializer? (car remaining-arguments)
+				       (car remaining-specializers))))
+	      (if specificity
 		  (loop (cdr remaining-arguments) (cdr remaining-specializers)
-			(cons rank ranking))
+			(cons specificity specificities))
 		  #F)))
 	;; MIT-Scheme bogosity.  (eq? #F '()) => #T!!!
-	(if (null? ranking)
+	(if (null? specificities)
 	    #T
-	    (reverse ranking)))))
+	    (reverse specificities)))))
 
 (define (match-specializer? object specializer)
-  ;; Returns #F if `object' doesn't match `specializer'.  Else, returns a
-  ;; generality ranking for the match.  (A high ranking indicates a very
-  ;; general, unspecific match.  If the specializer is a singleton and the
-  ;; object matches, the ranking is 0 [very specific].)
+  ;; Returns #F if `object' doesn't match `specializer'.  Else, returns the
+  ;; specificity of the match.  A high specificity indicates a very
+  ;; specific match.  A specificity of #t indicates an exact match of a
+  ;; singleton.
   (cond ((singleton? specializer)
 	 (if (Id? object (singleton.object specializer))
-	     0
+	     #T
 	     #F))
 	((class? specializer)
 	 (if (subclass? (get-type object) specializer)
-	     (class.generality specializer)
+	     (class.specificity specializer)
 	     #F))
 	(else (dylan-call dylan:error
 			  "match-specializer? -- weird specializer"

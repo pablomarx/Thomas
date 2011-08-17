@@ -1,4 +1,5 @@
 # This file compiles the extensions to the 01nov91jfb release of Scheme->C.
+# $Id: scc_makefile,v 1.4 1992/09/23 17:58:00 birkholz Exp $
 
 # Defaults:
 
@@ -7,15 +8,15 @@
 
 # Directory containing the source for the 01nov91jfb release of Scheme->C:
 
-SCRTDIR = ../01nov91jfb
+SCRTDIR = /crl/src/schemetoc/src
 
 # Currently installed 01nov91jfb Scheme->C compiler:
 
-SCC = /wrl/mips/bin/scc
+SCC = /usr/local/bin/scc
 
 # Currently installed 01nov91jfb Scheme->C compiler library:
 
-SCCLIB = /wrl/mips/lib/schemetoc/libsc.a
+SCCLIB = /usr/local/lib/schemetoc/libsc.a
 
 CFLAGS = -O -I${SCRTDIR}/scrt
 SCFLAGS =
@@ -47,7 +48,7 @@ scc.tar.Z: ${OBJS} DECstation.o
 	tar -cf scc.tar DECstation.o README aftergc.sc callcc.c \
 		dynwind.sc hash.sc heap.c heap.h implementation-specific \
 		main.sc makefile mit.sc msort.sc poplat.sc record.sc \
-		scc-specific.sc scinit.c
+		scc-rep.scm scc-specific.sc scinit.c
 	compress scc.tar
 
 clean:
